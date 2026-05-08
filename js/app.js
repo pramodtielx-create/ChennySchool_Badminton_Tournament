@@ -354,6 +354,40 @@ function renderForm(form) {
     )
     .join("");
 }
+/*************************************************
+ * PLACEHOLDER VIEWS (PREVENT CONSOLE ERRORS)
+ *************************************************/
+function showStandings() {
+  const c = document.getElementById("main-content");
+  c.innerHTML = `
+    <h2>Team Standings</h2>
+    <p>Team standings view will be added here.</p>
+  `;
+}
+
+function renderTeamView() {
+  const c = document.getElementById("main-content");
+  c.innerHTML = `
+    <h2>Team Match Tracker</h2>
+    <p>Team match tracker will be added here.</p>
+  `;
+}
+
+function renderPlayerView() {
+  const c = document.getElementById("main-content");
+  c.innerHTML = `
+    <h2>Player Match Tracker</h2>
+    <p>Player match tracker will be added here.</p>
+  `;
+}
+
+function showTeamSquads() {
+  const c = document.getElementById("main-content");
+  c.innerHTML = `
+    <h2>Teams</h2>
+    <p>Team squads view will be added here.</p>
+  `;
+}
 
 /*************************************************
  * EXPORTS
