@@ -1813,7 +1813,7 @@ function renderForm(form) {
 /*************************************************
  * PLAYER PROFILE PAGE
  *************************************************/
-function showPlayerProfile(playerName) {
+/*function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
 
   const players = computeIndividualPlayerStandings();
@@ -1896,3 +1896,4 @@ function showPlayerProfile(playerName) {
   `;
 }
 
+*/
