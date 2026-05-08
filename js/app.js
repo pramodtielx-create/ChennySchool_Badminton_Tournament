@@ -361,3 +361,10 @@ function renderForm(form) {
 window.showFixtures = showFixtures;
 window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
+
+/* EXPORT */
+
+window.showResults = showResults;
+window.renderTeamView = renderTeamView;
+window.renderPlayerView = renderPlayerView;
+window.showStandings = showStandings;
