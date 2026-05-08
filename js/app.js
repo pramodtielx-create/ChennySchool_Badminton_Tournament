@@ -1348,7 +1348,7 @@ function showPlayerStandings(showAll = false) {
 /*************************************************
  * PLAYER PROFILE PAGE
  *************************************************/
-function showPlayerProfile(playerName) {
+/*function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
 
   const players = computeIndividualPlayerStandings();
@@ -1428,6 +1428,107 @@ function showPlayerProfile(playerName) {
     </div>
 
     <button style="margin-top:16px" onclick="showPlayerStandings()">⬅ Back to Player Standings</button>
+  `;
+}*/
+
+/*************************************************
+ * PLAYER PROFILE PAGE (FINAL FIXED)
+ *************************************************/
+function showPlayerProfile(playerName) {
+  const c = document.getElementById("main-content");
+
+  const players = computeIndividualPlayerStandings();
+  const player = players.find(p => p.name === playerName);
+
+  if (!player) {
+    c.innerHTML = "<h2>Player not found</h2>";
+    return;
+  }
+
+  const rank = players.indexOf(player) + 1;
+  const photoSrc = PLAYER_PHOTOS[player.name] || DEFAULT_PLAYER_PHOTO;
+
+  /******** MATCH HISTORY ********/
+  const matchHistory = [];
+
+  dataCache.fixtures.forEach(f => {
+    const res = dataCache.results?.[f.tie_id];
+    if (!res) return;
+
+    f.matches.forEach((pair, idx) => {
+      if (!pair.join(" ").includes(playerName)) return;
+
+      const m = res.matches[idx];
+      if (!m || !m.sets) return;
+
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+
+      matchHistory.push({
+        opponent: pair[0].includes(playerName) ? pair[1] : pair[0],
+        teams: `${f.team_a} vs ${f.team_b}`,
+        score
+      });
+    });
+  });
+
+  /******** RENDER ********/
+  c.innerHTML = `
+    <div class="player-profile">
+
+      <div class="player-profile-header">
+        <img
+          src="${photoSrc}"
+          class="player-photo"
+          alt="${player.name}"
+          onerror="this.src='${DEFAULT_PLAYER_PHOTO}'"
+        />
+
+        <div class="player-info">
+          <h2>${player.name}</h2>
+          <p>Team: <strong>${player.team}</strong></p>
+          <p>Rank: ${rank}</p>
+        </div>
+      </div>
+
+      <div class="summary">
+        Played: ${player.played} |
+        Wins: ${player.wins} |
+        Losses: ${player.losses} |
+        Win%: ${player.winPct}
+      </div>
+
+      <div class="summary">
+        Sets: ${player.setsWon} - ${player.setsLost} (Diff ${player.setDiff}) |
+        Points: ${player.pointsWon} - ${player.pointsLost} (Diff ${player.pointDiff})
+      </div>
+
+      <div class="summary">
+        Recent Form: ${renderForm(player.recentForm.replace(/ /g, ""))}
+      </div>
+
+      <h3 style="margin-top:24px">Match History</h3>
+
+      <div class="fixture-card">
+        ${
+          matchHistory.length === 0
+            ? "<p>No completed matches</p>"
+            : matchHistory.map(m => `
+                <div class="result-row">
+                  <div>vs</div>
+                  <div>${m.opponent}</div>
+                  <div></div>
+                  <div>${m.teams}</div>
+                  <div>${m.score}</div>
+                </div>
+              `).join("")
+        }
+      </div>
+
+      <button class="back-btn" onclick="showPlayerStandings()">
+        ⬅ Back to Player Standings
+      </button>
+
+    </div>
   `;
 }
 /* ================= TEAM SQUADS ================= */
