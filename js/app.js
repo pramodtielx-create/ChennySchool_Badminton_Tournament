@@ -1770,3 +1770,18 @@ function showPlayerProfile(playerName) {
   `;
 }
 
+/*************************************************
+ * PLAYER PHOTO MAP
+ *************************************************/
+const PLAYER_PHOTOS = {
+  "Pradyum": "assets/players/pradyum.jpg",
+  "Kiran": "assets/players/kiran.jpg",
+  "Rahul": "assets/players/rahul.jpg",
+  "Omkar": "assets/players/omkar.jpg",
+  "Sandeep W": "assets/players/sandeep-w.jpg",
+  "Jaswanth": "assets/players/jaswanth.jpg"
+  // add more as needed
+};
+
+/* Default fallback */
+const DEFAULT_PLAYER_PHOTO = "assets/players/default.png";
