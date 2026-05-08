@@ -1320,8 +1320,7 @@ function showPlayerStandings(showAll = false) {
     <p style="opacity:.7">Ranked based on Wins → Set Diff → Point Diff → Played</p>
 
     <label style="display:inline-flex;gap:6px;margin-bottom:12px">
-      <input type="checkbox" ${showAll ? "checked" : ""}
-        onchange="showPlayerStandings(this.checked)">
+     
       Show All Players
     </label>
 
