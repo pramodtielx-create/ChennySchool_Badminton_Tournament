@@ -335,3 +335,14 @@ body {
 .player-list li:last-child {
   border-bottom: none;
 }
+/* ================= PLAYER STANDINGS ================= */
+.player-standings .standings-grid {
+  grid-template-columns:
+    50px 160px 180px 60px 60px 60px
+    70px 70px 70px 70px
+    90px 90px 90px 140px;
+}
+
+.player-standings .rank-1 { background: #fff7ed; }
+.player-standings .rank-2 { background: #f8fafc; }
+.player-standings .rank-3 { background: #fefce8; }
