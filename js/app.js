@@ -1539,15 +1539,6 @@ function showPlayerStandings(showAll = false) {
 /*************************************************
  * TEAM & PLAYER TRACKERS (PLACEHOLDERS)
  *************************************************/
-function renderTeamView() {
-  document.getElementById("main-content").innerHTML =
-    "<h2>Team Match Tracker (coming next)</h2>";
-}
-
-function renderPlayerView() {
-  document.getElementById("main-content").innerHTML =
-    "<h2>Player Match Tracker (coming next)</h2>";
-}
 
 /*************************************************
  * COMPUTATION HELPERS
