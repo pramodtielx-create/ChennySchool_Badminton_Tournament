@@ -1542,7 +1542,7 @@ function showPlayerStandings(showAll = false) {
 
 /*************************************************
  * COMPUTATION HELPERS
- *************************************************/
+ *************************************************
 function computeTeamStandings() {
   const teams = {};
 
@@ -1673,7 +1673,7 @@ function computeIndividualPlayerStandings() {
     a.name.localeCompare(b.name)
   );
 }
-
+*/
 function renderForm(form) {
   return form
     .split("")
