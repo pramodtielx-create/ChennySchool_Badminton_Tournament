@@ -1786,3 +1786,30 @@ const PLAYER_PHOTOS = {
 
 /* Default fallback */
 const DEFAULT_PLAYER_PHOTO = "assets/players/default.png";
+/* ================= PLAYER PROFILE ================= */
+
+.player-profile-header {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.player-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #e5e7eb;
+}
+
+.player-info h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.player-info p {
+  margin: 4px 0;
+  opacity: 0.8;
+}
