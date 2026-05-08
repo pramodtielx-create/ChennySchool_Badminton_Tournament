@@ -1,4 +1,29 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
+
+const PLAYER_PHOTOS = {
+  "Deepak L": "assets/players/deepak-l.png",
+  "Pradyum": "assets/players/pradyum.jpg",
+  "Kiran": "assets/players/kiran.jpg",
+  "Rahul": "assets/players/rahul.jpg",
+  "Omkar": "assets/players/omkar.jpg",
+  "Sandeep W": "assets/players/sandeep-w.jpg",
+  "Jaswanth": "assets/players/jaswanth.jpg"
+};
+
+const DEFAULT_PLAYER_PHOTO = "assets/players/default.png";
+
+/*************************************************
+ * NAME NORMALIZER ✅ ADD HERE
+ *************************************************/
+function normalizeName(name) {
+  return name.trim().replace(/\s+/g, " ");
+}
+
+/*************************************************
+ * INIT
+ *************************************************/
+
+
 let dataCache = null
 
 /* INIT */
@@ -1441,7 +1466,7 @@ function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
 
   const players = computeIndividualPlayerStandings();
-  const player = players.find(p => p.name === playerName);
+  const player = players.find(p => normalizeName(p.name) === normalizeName(playerName));
 
   if (!player) {
     c.innerHTML = "<h2>Player not found</h2>";
@@ -1449,9 +1474,12 @@ function showPlayerProfile(playerName) {
   }
 
   const rank = players.indexOf(player) + 1;
-  const photoSrc = PLAYER_PHOTOS[player.name] || "assets/players/default.png";
 
-  /* Match history */
+  const photo =
+    PLAYER_PHOTOS[normalizeName(player.name)] ||
+    DEFAULT_PLAYER_PHOTO;
+
+  // Match history
   const matchHistory = [];
 
   dataCache.fixtures.forEach(f => {
@@ -1468,23 +1496,20 @@ function showPlayerProfile(playerName) {
 
       matchHistory.push({
         opponent: pair[0].includes(playerName) ? pair[1] : pair[0],
-        match: `${f.team_a} vs ${f.team_b}`,
+        teams: `${f.team_a} vs ${f.team_b}`,
         score
       });
     });
   });
 
-  /* Render */
+  // ✅ REAL HTML (NOT ESCAPED)
   c.innerHTML = `
     <div class="player-profile">
 
       <div class="player-profile-header">
-        <img 
-          src="${photoSrc}" 
-          alt="${player.name}"
-          class="player-photo"
-          onerror="this.src='assets/players/default.png'"
-        />
+        <img src="${photo}"
+             class="player-photo"
+             onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
 
         <div class="player-info">
           <h2>${player.name}</h2>
@@ -1494,7 +1519,6 @@ function showPlayerProfile(playerName) {
       </div>
 
       <div class="summary">
-        Rank: ${rank} |
         Played: ${player.played} |
         Wins: ${player.wins} |
         Losses: ${player.losses} |
@@ -1521,7 +1545,7 @@ function showPlayerProfile(playerName) {
                   <div>vs</div>
                   <div>${m.opponent}</div>
                   <div></div>
-                  <div>${m.match}</div>
+                  <div>${m.teams}</div>
                   <div>${m.score}</div>
                 </div>
               `).join("")
@@ -1535,6 +1559,7 @@ function showPlayerProfile(playerName) {
     </div>
   `;
 }
+
 /* ================= TEAM SQUADS ================= */
 /*************************************************
  * TEAM SQUADS VIEW
@@ -1874,20 +1899,4 @@ function showPlayerProfile(playerName) {
   `;
 }
 
-/*************************************************
- * PLAYER PHOTO MAP
- *************************************************/
-const PLAYER_PHOTOS = {
-  "Pradyum": "assets/players/pradyum.jpg",
-  "Kiran": "assets/players/kiran.jpg",
-  "Rahul": "assets/players/rahul.jpg",
-  "Omkar": "assets/players/omkar.jpg",
-  "Sandeep W": "assets/players/sandeep-w.jpg",
-  "Jaswanth": "assets/players/jaswanth.jpg",
-   "Deepak L": "assets/players/deepak-l.png"
-  // add more as needed
-};
-
-/* Default fallback */
-const DEFAULT_PLAYER_PHOTO = "assets/players/default.png";
 
