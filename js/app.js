@@ -366,11 +366,34 @@ function showStandings() {
 }
 
 function renderTeamView() {
+ function renderTeamView() {
   const c = document.getElementById("main-content");
+
+  const teams = [...new Set(
+    dataCache.fixtures.flatMap(f => [f.team_a, f.team_b])
+  )];
+
   c.innerHTML = `
     <h2>Team Match Tracker</h2>
-    <p>Team match tracker will be added here.</p>
+
+    <div class="filters">
+      <select id="teamSelect"></select>
+    </div>
+
+    <div id="team-summary"></div>
+    <div id="team-matches" class="fixtures-grid"></div>
   `;
+
+  const teamSelect = document.getElementById("teamSelect");
+  teams.forEach(t => {
+    teamSelect.innerHTML += `<option value="${t}">${t}</option>`;
+  });
+
+  teamSelect.onchange = () => renderTeamMatches(teamSelect.value);
+
+  // Render first team by default
+  renderTeamMatches(teams[0]);
+}
 }
 
 function renderPlayerView() {
@@ -388,6 +411,120 @@ function showTeamSquads() {
     <p>Team squads view will be added here.</p>
   `;
 }
+
+function renderTeamMatches(team) {
+.setsLost += teamSetsLost;  const grid = document.getElementById("team-matches");
+      stats.pointsWon += teamPtsWon;
+      stats.pointsLost += teamPtsLost;
+
+      if (teamSetsWon > teamSetsLost) stats.wins++;
+      else stats.losses++;
+
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+
+      html += `
+        <div class="result-row">
+          <div>M${i + 1}</div>
+          <div>${pair[0]}</div>
+          <div>vs</div>
+          <div>${pair[1]}</div>
+          <div>${score}</div>
+        </div>
+      `;
+    });
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+
+  // ✅ Live standings summary
+  summary.innerHTML = `
+    <div class="summary">
+      <strong>${team}</strong> |
+      Played: ${stats.played} |
+      Wins: ${stats.wins} |
+      Losses: ${stats.losses} |
+      Sets: ${stats.setsWon}-${stats.setsLost} |
+      Points: ${stats.pointsWon}-${stats.pointsLost}
+    </div>
+  `;
+}
+
+  const summary = document.getElementById("team-summary");
+
+  grid.innerHTML = "";
+
+  const fixtures = dataCache.fixtures;
+  const results = dataCache.results || {};
+
+  // ✅ Team live stats
+  const stats = {
+    played: 0,
+    wins: 0,
+    losses: 0,
+    setsWon: 0,
+    setsLost: 0,
+    pointsWon: 0,
+    pointsLost: 0
+  };
+
+  fixtures.forEach(f => {
+    if (f.team_a !== team && f.team_b !== team) return;
+
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    let html = `
+      <div class="fixture-header">
+        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
+      </div>
+    `;
+
+    const r = results[f.tie_id];
+
+    f.matches.forEach((pair, i) => {
+      const m = r && r.matches[i];
+
+      // Pending
+      if (!m || !m.sets) {
+        html += `
+          <div class="result-row pending">
+            <div>M${i + 1}</div>
+            <div>${pair[0]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div>—</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Completed
+      let aSets = 0, bSets = 0;
+      let aPts = 0, bPts = 0;
+
+      m.sets.forEach(([a, b]) => {
+        aPts += a;
+        bPts += b;
+        a > b ? aSets++ : bSets++;
+      });
+
+      const teamIsA = f.team_a === team;
+      const teamSetsWon = teamIsA ? aSets : bSets;
+      const teamSetsLost = teamIsA ? bSets : aSets;
+      const teamPtsWon = teamIsA ? aPts : bPts;
+      const teamPtsLost = teamIsA ? bPts : aPts;
+
+      stats.played++;
+      stats.setsWon += teamSetsWon;
 
 /*************************************************
  * EXPORTS
