@@ -928,7 +928,7 @@ function renderForm(formString) {
     .join("");
 }
 
-function showStandings(round = null) {
+/*function showStandings(round = null) {
   const standings = computeTeamStandings(round);
   const c = document.getElementById("main-content");
 
@@ -982,7 +982,7 @@ function showStandings(round = null) {
 
   c.innerHTML = html + `</div>`;
 }
-
+*/
 function showStandings() {
   const standings = computeTeamStandings();
   const c = document.getElementById("main-content");
