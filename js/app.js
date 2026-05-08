@@ -1461,11 +1461,16 @@ function showPlayerStandings(showAll = false) {
 /*************************************************
  * PLAYER PROFILE PAGE (PHOTO FIXED & ENHANCED)
  *************************************************/
+/*************************************************
+ * PLAYER PROFILE (ENHANCED + IMAGE ✅)
+ *************************************************/
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
 
   const players = computeIndividualPlayerStandings();
-  const player = players.find(p => normalizeName(p.name) === normalizeName(playerName));
+  const player = players.find(
+    p => normalizeName(p.name) === normalizeName(playerName)
+  );
 
   if (!player) {
     c.innerHTML = "<h2>Player not found</h2>";
@@ -1473,46 +1478,38 @@ function showPlayerProfile(playerName) {
   }
 
   const rank = players.indexOf(player) + 1;
-
   const photo =
-    PLAYER_PHOTOS[normalizeName(player.name)] ||
-    DEFAULT_PLAYER_PHOTO;
+    PLAYER_PHOTOS[normalizeName(player.name)] || DEFAULT_PLAYER_PHOTO;
 
-  // Match history
   const matchHistory = [];
 
   dataCache.fixtures.forEach(f => {
-    const res = dataCache.results?.[f.tie_id];
-    if (!res) return;
+    const r = dataCache.results?.[f.tie_id];
+    if (!r) return;
 
-    f.matches.forEach((pair, idx) => {
+    f.matches.forEach((pair, i) => {
       if (!pair.join(" ").includes(playerName)) return;
-
-      const m = res.matches[idx];
+      const m = r.matches[i];
       if (!m || !m.sets) return;
-
-      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
       matchHistory.push({
         opponent: pair[0].includes(playerName) ? pair[1] : pair[0],
-        teams: `${f.team_a} vs ${f.team_b}`,
-        score
+        match: `${f.team_a} vs ${f.team_b}`,
+        score: m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ")
       });
     });
   });
 
-  // ✅ REAL HTML (NOT ESCAPED)
   c.innerHTML = `
     <div class="player-profile">
 
       <div class="player-profile-header">
-        <img src="${photo}"
-             class="player-photo"
+        <img src="${photo}" class="player-photo"
              onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
 
         <div class="player-info">
           <h2>${player.name}</h2>
-          <p>Team: <strong>${player.team}</strong></p>
+          <p><strong>${player.team}</strong></p>
           <p>Rank: ${rank}</p>
         </div>
       </div>
@@ -1525,15 +1522,15 @@ function showPlayerProfile(playerName) {
       </div>
 
       <div class="summary">
-        Sets: ${player.setsWon} - ${player.setsLost} (Diff ${player.setDiff}) |
-        Points: ${player.pointsWon} - ${player.pointsLost} (Diff ${player.pointDiff})
+        Sets: ${player.setsWon}-${player.setsLost} |
+        Points: ${player.pointsWon}-${player.pointsLost}
       </div>
 
       <div class="summary">
-        Recent Form: ${renderForm(player.recentForm.replace(/ /g, ""))}
+        Recent Form: ${renderForm(player.recentForm)}
       </div>
 
-      <h3 style="margin-top:24px">Match History</h3>
+      <h3>Match History</h3>
 
       <div class="fixture-card">
         ${
@@ -1544,7 +1541,7 @@ function showPlayerProfile(playerName) {
                   <div>vs</div>
                   <div>${m.opponent}</div>
                   <div></div>
-                  <div>${m.teams}</div>
+                  <div>${m.match}</div>
                   <div>${m.score}</div>
                 </div>
               `).join("")
@@ -1552,12 +1549,13 @@ function showPlayerProfile(playerName) {
       </div>
 
       <button class="back-btn" onclick="showPlayerStandings()">
-        ⬅ Back to Player Standings
+        ← Back to Player Standings
       </button>
 
     </div>
   `;
 }
+
 
 /* ================= TEAM SQUADS ================= */
 /*************************************************
