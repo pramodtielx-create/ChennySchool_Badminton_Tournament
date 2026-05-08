@@ -1880,7 +1880,7 @@ const PLAYER_PHOTOS = {
   "Omkar": "assets/players/omkar.jpg",
   "Sandeep W": "assets/players/sandeep-w.jpg",
   "Jaswanth": "assets/players/jaswanth.jpg",
-   "Deepak L": "assets/players/deepak-l.jpg"
+   "Deepak L": "assets/players/deepak-l.png"
   // add more as needed
 };
 
