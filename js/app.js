@@ -413,7 +413,7 @@ function showTeamSquads() {
 }
 
 function renderTeamMatches(team) {
-.setsLost += teamSetsLost;  const grid = document.getElementById("team-matches");
+setsLost += teamSetsLost;  const grid = document.getElementById("team-matches");
       stats.pointsWon += teamPtsWon;
       stats.pointsLost += teamPtsLost;
 
