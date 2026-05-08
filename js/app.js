@@ -1431,3 +1431,55 @@ function showPlayerProfile(playerName) {
     <button style="margin-top:16px" onclick="showPlayerStandings()">⬅ Back to Player Standings</button>
   `;
 }
+/* ================= TEAM SQUADS ================= */
+/*************************************************
+ * TEAM SQUADS VIEW
+ *************************************************/
+function showTeamSquads() {
+  const c = document.getElementById("main-content");
+
+  const teams = buildTeamSquads();
+
+  c.innerHTML = `
+    <h2>🎽 Team Squads</h2>
+
+    <div class="squads-grid">
+      ${Object.entries(teams)
+        .map(
+          ([teamName, players]) => `
+          <div class="team-card">
+            <div class="team-header">${teamName}</div>
+            <ul class="player-list">
+              ${players.map(p => `<li>${p}</li>`).join("")}
+            </ul>
+          </div>
+        `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+/*************************************************
+ * BUILD TEAM → PLAYERS MAP
+ *************************************************/
+function buildTeamSquads() {
+  const teams = {};
+
+  dataCache.fixtures.forEach(f => {
+    if (!teams[f.team_a]) teams[f.team_a] = new Set();
+    if (!teams[f.team_b]) teams[f.team_b] = new Set();
+
+    f.matches.forEach(pair => {
+      pair[0].split("/").forEach(p => teams[f.team_a].add(p.trim()));
+      pair[1].split("/").forEach(p => teams[f.team_b].add(p.trim()));
+    });
+  });
+
+  // Convert sets to sorted arrays
+  Object.keys(teams).forEach(t => {
+    teams[t] = [...teams[t]].sort();
+  });
+
+  return teams;
+}
