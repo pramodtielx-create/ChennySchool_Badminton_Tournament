@@ -1434,6 +1434,9 @@ function showPlayerStandings(showAll = false) {
 /*************************************************
  * PLAYER PROFILE PAGE (FINAL FIXED)
  *************************************************/
+/*************************************************
+ * PLAYER PROFILE PAGE (PHOTO FIXED & ENHANCED)
+ *************************************************/
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
 
@@ -1446,9 +1449,9 @@ function showPlayerProfile(playerName) {
   }
 
   const rank = players.indexOf(player) + 1;
-  const photoSrc = PLAYER_PHOTOS[player.name] || DEFAULT_PLAYER_PHOTO;
+  const photoSrc = PLAYER_PHOTOS[player.name] || "assets/players/default.png";
 
-  /******** MATCH HISTORY ********/
+  /* Match history */
   const matchHistory = [];
 
   dataCache.fixtures.forEach(f => {
@@ -1465,22 +1468,22 @@ function showPlayerProfile(playerName) {
 
       matchHistory.push({
         opponent: pair[0].includes(playerName) ? pair[1] : pair[0],
-        teams: `${f.team_a} vs ${f.team_b}`,
+        match: `${f.team_a} vs ${f.team_b}`,
         score
       });
     });
   });
 
-  /******** RENDER ********/
+  /* Render */
   c.innerHTML = `
     <div class="player-profile">
 
       <div class="player-profile-header">
-        <img
-          src="${photoSrc}"
-          class="player-photo"
+        <img 
+          src="${photoSrc}" 
           alt="${player.name}"
-          onerror="this.src='${DEFAULT_PLAYER_PHOTO}'"
+          class="player-photo"
+          onerror="this.src='assets/players/default.png'"
         />
 
         <div class="player-info">
@@ -1491,6 +1494,7 @@ function showPlayerProfile(playerName) {
       </div>
 
       <div class="summary">
+        Rank: ${rank} |
         Played: ${player.played} |
         Wins: ${player.wins} |
         Losses: ${player.losses} |
@@ -1517,7 +1521,7 @@ function showPlayerProfile(playerName) {
                   <div>vs</div>
                   <div>${m.opponent}</div>
                   <div></div>
-                  <div>${m.teams}</div>
+                  <div>${m.match}</div>
                   <div>${m.score}</div>
                 </div>
               `).join("")
