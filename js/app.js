@@ -10,6 +10,43 @@ const PLAYER_PHOTOS = {
   "Jaswanth": "assets/players/jaswanth.jpg"
 };
 
+const TEAM_SQUADS_ORDERED = {
+  "Quantum Force": [
+    "Rajendra",
+    "Deepak L",
+    "Aniket",
+    "Rahul",
+    "Manmohan",
+    "Prashant"
+  ],
+
+  "Racket Scientists": [
+    "Kiran",
+    "Piyush",
+    "Pradyum",
+    "Kaustubh",
+    "Amol S",
+    "Amol P"
+  ],
+
+  "Net Ninjas": [
+    "Jaswanth",
+    "Sandeepk",
+    "Ritesh",
+    "Vikram",
+    "Pramod",
+    "Deepak T"
+  ],
+
+  "Smash Titans": [
+    "Omkar",
+    "Nishit",
+    "Sandeep W",
+    "Ganesh",
+    "Jaynt",
+    "Amit"
+  ]
+};
 const DEFAULT_PLAYER_PHOTO = "assets/players/default.png";
 
 /*************************************************
@@ -1712,19 +1749,9 @@ function showTeamSquads() {
 function buildTeamSquads() {
   const teams = {};
 
-  dataCache.fixtures.forEach(f => {
-    if (!teams[f.team_a]) teams[f.team_a] = new Set();
-    if (!teams[f.team_b]) teams[f.team_b] = new Set();
-
-    f.matches.forEach(pair => {
-      pair[0].split("/").forEach(p => teams[f.team_a].add(p.trim()));
-      pair[1].split("/").forEach(p => teams[f.team_b].add(p.trim()));
-    });
-  });
-
-  // Convert sets to sorted arrays
-  Object.keys(teams).forEach(t => {
-    teams[t] = [...teams[t]].sort();
+  // ✅ Use fixed order instead of auto‑sorting
+  Object.keys(TEAM_SQUADS_ORDERED).forEach(team => {
+    teams[team] = [...TEAM_SQUADS_ORDERED[team]];
   });
 
   return teams;
