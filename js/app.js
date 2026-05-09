@@ -43,7 +43,7 @@ const TEAM_SQUADS_ORDERED = {
     "Nishit",
     "Sandeep W",
     "Ganesh",
-    "Jaynt",
+    "Jayant",
     "Amit"
   ]
 };
