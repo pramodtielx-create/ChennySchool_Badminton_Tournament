@@ -1199,10 +1199,10 @@ function showPlayerStandings(showAll = false) {
   c.innerHTML = `<div class="player-standings">${html}</div>`;
 }
 
-function computeIndividualPlayerStandings() {
+/*function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
-  const stats = {};
+  const stats = {};*/
 
   function initPlayer(name, team) {
     return {
@@ -1318,7 +1318,7 @@ function computeIndividualPlayerStandings() {
 }
 
 
-/*function computeIndividualPlayerStandings() {
+function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
   const stats = {};
@@ -1428,7 +1428,7 @@ function computeIndividualPlayerStandings() {
     a.name.localeCompare(b.name)
   );
 }
-*/
+
 function showPlayerStandings(showAll = false) {
   const players = computeIndividualPlayerStandings();
   const list = showAll ? players : players.slice(0, 10);
