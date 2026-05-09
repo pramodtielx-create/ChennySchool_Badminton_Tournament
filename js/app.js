@@ -1255,25 +1255,25 @@ function computeIndividualPlayerStandings() {
       setDiff: 0,
       pointDiff: 0,
       winPct: 0,
-      recentForm: [] // ✅ MATCH‑LEVEL ONLY
+      recentForm: []
     };
   }
 
-  // ✅ Assign teams to players
+  // ✅ Assign teams
   fixtures.forEach(f => {
     f.matches.forEach(pair => {
       pair[0].split("/").forEach(p => {
-        const name = p.trim();
-        stats[name] ??= initPlayer(name, f.team_a);
+        const n = p.trim();
+        stats[n] ??= initPlayer(n, f.team_a);
       });
       pair[1].split("/").forEach(p => {
-        const name = p.trim();
-        stats[name] ??= initPlayer(name, f.team_b);
+        const n = p.trim();
+        stats[n] ??= initPlayer(n, f.team_b);
       });
     });
   });
 
-  // ✅ Process completed matches ONLY
+  // ✅ Process matches
   Object.entries(results).forEach(([tieId, r]) => {
     const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
     if (!fixture) return;
@@ -1288,17 +1288,19 @@ function computeIndividualPlayerStandings() {
       let aSets = 0, bSets = 0;
       let aPts = 0, bPts = 0;
 
-      // ✅ Count SETS & POINTS (NO FORM HERE)
+      // ✅ Count sets & points
       m.sets.forEach(([a, b]) => {
         aPts += a;
         bPts += b;
-        if (a > b) aSets++;
-        else bSets++;
+        a > b ? aSets++ : bSets++;
       });
 
       const teamAWon = aSets > bSets;
 
-      // ✅ Update TEAM A players (ONE FORM ENTRY PER MATCH)
+      // ✅ Track players updated in THIS match
+      const matchTouched = new Set();
+
+      // ✅ Team A
       teamAPlayers.forEach(p => {
         const s = stats[p];
         s.played++;
@@ -1307,16 +1309,19 @@ function computeIndividualPlayerStandings() {
         s.pointsWon += aPts;
         s.pointsLost += bPts;
 
-        if (teamAWon) {
-          s.wins++;
-          s.recentForm.push("W");
-        } else {
-          s.losses++;
-          s.recentForm.push("L");
+        if (!matchTouched.has(p)) {
+          if (teamAWon) {
+            s.wins++;
+            s.recentForm.push("W");
+          } else {
+            s.losses++;
+            s.recentForm.push("L");
+          }
+          matchTouched.add(p);
         }
       });
 
-      // ✅ Update TEAM B players (ONE FORM ENTRY PER MATCH)
+      // ✅ Team B
       teamBPlayers.forEach(p => {
         const s = stats[p];
         s.played++;
@@ -1325,26 +1330,28 @@ function computeIndividualPlayerStandings() {
         s.pointsWon += bPts;
         s.pointsLost += aPts;
 
-        if (!teamAWon) {
-          s.wins++;
-          s.recentForm.push("W");
-        } else {
-          s.losses++;
-          s.recentForm.push("L");
+        if (!matchTouched.has(p)) {
+          if (!teamAWon) {
+            s.wins++;
+            s.recentForm.push("W");
+          } else {
+            s.losses++;
+            s.recentForm.push("L");
+          }
+          matchTouched.add(p);
         }
       });
     });
   });
 
-  // ✅ Final calculations
+  // ✅ Final numbers
   Object.values(stats).forEach(p => {
     p.setDiff = p.setsWon - p.setsLost;
     p.pointDiff = p.pointsWon - p.pointsLost;
     p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
-    p.recentForm = p.recentForm.slice(-5).join(" "); // ✅ last 5 MATCHES
+    p.recentForm = p.recentForm.slice(-5).join(" ");
   });
 
-  // ✅ Exact same sorting you already use
   return Object.values(stats).sort((a, b) =>
     b.wins - a.wins ||
     b.setDiff - a.setDiff ||
@@ -1353,9 +1360,6 @@ function computeIndividualPlayerStandings() {
     a.name.localeCompare(b.name)
   );
 }
-
-
-
 /*function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
