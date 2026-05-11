@@ -1558,7 +1558,10 @@ function showPlayerProfile(playerName) {
 
         <div class="player-info">
           <h2>${player.name}</h2>
-          <p><strong>${player.team}</strong></p>
+         <p>
+  <span class="team-dot" style="background:${teamColor}"></span>
+  ${player.team}
+</p>
           <p>Rank: ${rank}</p>
         </div>
       </div>
