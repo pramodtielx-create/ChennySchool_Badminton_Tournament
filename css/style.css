@@ -1516,3 +1516,79 @@ body.dark .standings-header {
 body.dark .standings-row:nth-child(even) {
   background: rgba(255, 255, 255, 0.05);
 }
+
+
+/* ======================================================
+   ✅ PLAYER STANDINGS – HARD OVERRIDE FIX
+   ====================================================== */
+
+/* Scope ONLY to Player Standings */
+.player-standings .standings-grid {
+  display: grid !important;
+
+  grid-template-columns:
+    40px        /* Rank */
+    180px       /* Player */
+    220px       /* Team */
+    50px        /* P */
+    50px        /* W */
+    50px        /* L */
+    70px        /* Win% */
+    50px        /* SW */
+    50px        /* SL */
+    50px        /* SD */
+    70px        /* PW */
+    70px        /* PL */
+    60px        /* PD */
+    160px;      /* Form */
+
+  align-items: center !important;
+  column-gap: 18px !important;   /* ✅ Key fix */
+}
+
+/* Absolute no-wrap protection */
+.player-standings .standings-grid > div {
+  white-space: nowrap !important;
+}
+
+/* Header styling */
+.player-standings .standings-header {
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+}
+
+/* Row spacing */
+.player-standings .standings-row {
+  padding: 12px 0;
+}
+
+/* Zebra striping */
+.player-standings .standings-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* Player name column */
+.player-standings .player-name-link {
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 12px; /* ✅ extra safety gap */
+}
+
+/* Form spacing */
+.player-standings .form-W,
+.player-standings .form-L {
+  margin-right: 6px;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .player-standings .standings-header {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+body.dark .player-standings .standings-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
