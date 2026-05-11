@@ -1,5 +1,5 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
-
+let lastPlayerProfileSource = "standings"; // default
 
 const PLAYER_PHOTOS = {
   // ✅ Quantum Force
@@ -1661,7 +1661,9 @@ function showTeamSquads() {
 
       html += `
         <li class="player-item"
-            onclick="showPlayerProfile('${p.replace(/'/g, "\\'")}')">
+          onclick="
+  lastPlayerProfileSource='squads';
+  showPlayerProfile('${p.replace(/'/g, "\\'")}')"
           <img src="${photo}"
                class="squad-player-photo"
                onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
@@ -1697,7 +1699,7 @@ function buildTeamSquads() {
 /*************************************************
  * PLAYER STANDINGS
  *************************************************/
-function showPlayerStandings(showAll = false) {
+/*function showPlayerStandings(showAll = false) {
   const players = computeIndividualPlayerStandings();
   const list = showAll ? players : players.slice(0, 10);
   const c = document.getElementById("main-content");
@@ -1745,7 +1747,71 @@ function showPlayerStandings(showAll = false) {
 
   c.innerHTML = `<div class="player-standings">${html}</div>`;
 }
+*/
+function showPlayerStandings(showAll = false) {
+  const players = computeIndividualPlayerStandings();
+  const list = showAll ? players : players.slice(0, 10);
+  const c = document.getElementById("main-content");
 
+  let html = `
+    <h2>👤 Player Standings</h2>
+    <p style="opacity:.7">Ranked by Wins → Set Diff → Point Diff → Played</p>
+
+    <label style="margin-bottom:12px;display:inline-flex;gap:6px">
+      Top 10 Players
+    </label>
+
+    <div class="fixture-card standings-wrapper">
+      <div class="standings-grid standings-header">
+        <div>Player</div>
+        <div>R</div>
+        <div>P</div>
+        <div>W</div>
+        <div>L</div>
+        <div>SW</div>
+        <div>SL</div>
+        <div>PW</div>
+        <div>PL</div>
+        <div>SD</div>
+        <div>PD</div>
+        <div>Win%</div>
+        <div>Form</div>
+      </div>
+  `;
+
+  list.forEach((p, i) => {
+    html += `
+      <div class="standings-grid standings-row rank-${i + 1}">
+        
+        <!-- ✅ PLAYER NAME (CLICKABLE) -->
+        <div
+          style="cursor:pointer;color:#2563eb;font-weight:700"
+          onclick="
+            lastPlayerProfileSource='standings';
+            showPlayerProfile('${p.name.replace(/'/g, "\\'")}')
+          "
+        >
+          ${p.name}
+        </div>
+
+        <div>${i + 1}</div>
+        <div>${p.played}</div>
+        <div>${p.wins}</div>
+        <div>${p.losses}</div>
+        <div>${p.setsWon}</div>
+        <div>${p.setsLost}</div>
+        <div>${p.pointsWon}</div>
+        <div>${p.pointsLost}</div>
+        <div>${p.setDiff}</div>
+        <div>${p.pointDiff}</div>
+        <div>${p.winPct}</div>
+        <div>${renderForm(computeRecentFormForPlayer(p.name))}</div>
+      </div>
+    `;
+  });
+
+  c.innerHTML = `<div class="player-standings">${html}</div>`;
+}
 /*************************************************
  * TEAM & PLAYER TRACKERS (PLACEHOLDERS)
  *************************************************/
