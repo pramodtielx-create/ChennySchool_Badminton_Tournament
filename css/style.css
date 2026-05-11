@@ -240,3 +240,31 @@ button:focus-visible,
   flex: 1;
   min-width: 0;
 }
+/* ======================================================
+   HEADER NAV MODE (WHEN SIDEBAR IS REMOVED)
+   ====================================================== */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header .menu-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.header button {
+  background: #1c2541;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.header button:hover {
+  background: #2563eb;
+}
