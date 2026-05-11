@@ -12,7 +12,7 @@ const PLAYER_PHOTOS = {
 
   // ✅ Racket Scientists
   "Kiran": "assets/players/Kiran.png",
-  "Piyush": "assets/players/Piyush.png",
+  "Piyush": "assets/players/Peeyush.png",
   "Pradyum": "assets/players/Pradyum.png",
   "Kaustubh": "assets/players/Kaustubh.png",
   "Amol S": "assets/players/Amol-S.png",
