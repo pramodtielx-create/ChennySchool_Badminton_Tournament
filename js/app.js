@@ -93,9 +93,12 @@ let dataCache = null
 async function init() {
   const res = await fetch(API_URL);
   dataCache = await res.json();
-  showFixtures();
+
+  // ✅ DEFAULT VIEW
+  showTeamSquads();
 }
 init();
+
 
 /*===============================renderfixtures()=====================================*/
 /*function renderFixtures() {
