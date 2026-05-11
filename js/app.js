@@ -1512,6 +1512,13 @@ function showPlayerStandings(showAll = false) {
 /*************************************************
  * PLAYER PROFILE (ENHANCED + IMAGE ✅)
  *************************************************/
+// ================= TEAM COLORS =================
+const TEAM_COLORS = {
+  "Quantum Force": "#2563eb",
+  "Racket Scientists": "#3b82f6",
+  "Net Ninjas": "#16a34a",
+  "Smash Titans": "#f97316"
+};
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
   const teamColor = TEAM_COLORS[player.team] || "#2563eb";
