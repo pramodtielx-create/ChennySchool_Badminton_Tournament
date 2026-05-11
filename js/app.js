@@ -1303,7 +1303,7 @@ function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
         stats[p].pointsLost += ptsA;
       });
     });
-  });
+  
 
   Object.values(stats).forEach(p => {
     p.setDiff = p.setsWon - p.setsLost;
