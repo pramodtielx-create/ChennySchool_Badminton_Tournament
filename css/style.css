@@ -1027,3 +1027,21 @@ body {
 .player-profile .result-row:has(.form-L) {
   background: #fff7f7;
 }
+
+
+/* ======================================================
+   FINAL SAFE FIX – PREVENT FIXTURE TEXT CLIPPING
+   ====================================================== */
+
+/* Ensure fixture column can fully render text */
+.player-profile .result-row div:nth-child(3) {
+  overflow: visible;           /* ✅ allow text to render */
+  white-space: normal;         /* ✅ allow wrapping */
+  text-overflow: unset;        /* ✅ remove ellipsis */
+  min-width: 0;                /* ✅ critical for CSS grid */
+}
+
+/* Safety: prevent grid from forcing ellipsis */
+.player-profile .result-row {
+  overflow: visible;
+}
