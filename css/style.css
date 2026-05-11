@@ -724,3 +724,61 @@ body {
   padding: 8px 14px;
   font-size: 14px;
 }
+/* ================= FINAL MATCH HISTORY TIGHTEN ================= */
+
+.player-profile .fixture-card {
+  padding: 4px 0;
+}
+
+/* Each match row container */
+.player-profile .result-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto;
+  gap: 12px;
+  padding: 8px 14px;     /* ✅ reduced height */
+  font-size: 14px;
+  align-items: start;
+}
+
+/* "vs" */
+.player-profile .result-row div:nth-child(1) {
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Middle section: opponent + score stacked tightly */
+.player-profile .result-row div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;              /* ✅ tight spacing */
+  font-weight: 600;
+}
+
+/* Score line */
+.player-profile .result-row div:nth-child(2) span,
+.player-profile .result-row div:nth-child(2) div:last-child {
+  font-family: monospace;
+  font-size: 13px;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+/* Fixture (right‑side) */
+.player-profile .result-row div:last-child {
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.2;
+}
+
+/* Reduce separator impact */
+.player-profile .result-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.player-profile .result-row:last-child {
+  border-bottom: none;
+}
