@@ -1180,7 +1180,7 @@ function computePlayerStandings() {
 
 
 function showPlayerStandings(showAll = false) {
-  const players = ;
+  const players = computeIndividualPlayerStandings();
   const list = showAll ? players : players.slice(0, 10);
   const c = document.getElementById("main-content");
 
