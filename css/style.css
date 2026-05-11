@@ -1186,3 +1186,51 @@ body.dark h2,
 body.dark h3 {
   color: #f8fafc;
 }
+/* ======================================================
+   DARK MODE – TEAM STANDINGS VISIBILITY FIX
+   ====================================================== */
+
+/* Overall standings card */
+body.dark .standings-wrapper,
+body.dark .standings-grid {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* Header row */
+body.dark .standings-header {
+  color: #cbd5f5;
+  border-bottom: 2px solid #334155;
+}
+
+/* Normal rows */
+body.dark .standings-row {
+  background: transparent;
+  color: #e5e7eb;
+  border-bottom: 1px solid #334155;
+}
+
+/* ✅ Qualifier / highlighted rows */
+body.dark .standings-row.qualifier {
+  background: #0f172a;          /* dark blue tint */
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+/* Rank highlights (top 3) */
+body.dark .player-standings .rank-1,
+body.dark .player-standings .rank-2,
+body.dark .player-standings .rank-3 {
+  background: #020617;
+  color: #f8fafc;
+}
+
+/* ✅ Form letters remain readable */
+body.dark .form-W {
+  color: #22c55e;
+}
+
+body.dark .form-L {
+  color: #ef4444;
+}
+
