@@ -1045,3 +1045,24 @@ body {
 .player-profile .result-row {
   overflow: visible;
 }
+/* ======================================================
+   FINAL DEFINITIVE FIX – CSS GRID TEXT CLIPPING
+   ====================================================== */
+
+/* Allow grid cells to shrink properly */
+.player-profile .result-row {
+  min-width: 0; /* ✅ required for CSS Grid */
+}
+
+/* Fixture column (3rd column in your layout) */
+.player-profile .result-row > div:nth-child(3) {
+  min-width: 0;            /* ✅ THIS IS THE KEY */
+  white-space: normal;     /* allow wrapping */
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* Ensure score column does not steal space */
+.player-profile .result-row > div:nth-child(4) {
+  white-space: nowrap;
+}
