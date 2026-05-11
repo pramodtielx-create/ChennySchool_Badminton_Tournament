@@ -9,6 +9,8 @@ const PLAYER_PHOTOS = {
   "Sandeep W": "assets/players/sandeep-w.png",
   "Jaswanth": "assets/players/jaswanth.png"
    "Pramod": "assets/players/Pramod.png"
+ "Amit": "assets/players/Amit.png"
+ "Jayant": "assets/players/Jayant.png"
 };
 
 const TEAM_SQUADS_ORDERED = {
@@ -1239,84 +1241,43 @@ function showPlayerStandings(showAll = false) {
 
 /*=======================================*/
 
-function computeIndividualPlayerStandings() {
-  const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
-  const stats = {};
-
-  function initPlayer(name, team) {
-    return {
-      name,
-      team,
-      played: 0,
-      wins: 0,
-      losses: 0,
-      setsWon: 0,
-      setsLost: 0,
-      pointsWon: 0,
-      pointsLost: 0,
-      setDiff: 0,
-      pointDiff: 0,
-      winPct: 0,
-      recentForm: [] // ✅ match-level only
-    };
-  }
-
-  // Assign players to teams
-  fixtures.forEach(f => {
-    f.matches.forEach(pair => {
-      pair[0].split("/").forEach(p =>
-        stats[p.trim()] ??= initPlayer(p.trim(), f.team_a)
-      );
-      pair[1].split("/").forEach(p =>
-        stats[p.trim()] ??= initPlayer(p.trim(), f.team_b)
-      );
-    });
-  });
-
-  // Process each completed MATCH once
-  Object.entries(results).forEach(([tieId, r]) => {
-    const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
-    if (!fixture) return;
-
-    r.matches.forEach((m, idx) => {
-      if (!m || !m.sets) return;
-
-      const [pairA, pairB] = fixture.matches[idx];
-      const teamAPlayers = pairA.split("/").map(p => p.trim());
-      const teamBPlayers = pairB.split("/").map(p => p.trim());
-
-      let aSets = 0, bSets = 0;
-      let aPts = 0, bPts = 0;
-
-      m.sets.forEach(([a, b]) => {
-        aPts += a;
-        bPts += b;
-        a > b ? aSets++ : bSets++;
+function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
+        ptsA += a;
+        ptsB += b;
+        a > b ? setsA++ : setsB++;
       });
 
-      const teamAWon = aSets > bSets;
+      const winners = setsA > setsB ? teamAPlayers : teamBPlayers;
+      const losers  = setsA > setsB ? teamBPlayers : teamAPlayers;
 
-      teamAPlayers.forEach(p => {
+      // ✅ UPDATE STATS
+      winners.forEach(p => {
         const s = stats[p];
         s.played++;
-        s.setsWon += aSets;
-        s.setsLost += bSets;
-        s.pointsWon += aPts;
-        s.pointsLost += bPts;
-        teamAWon ? s.wins++ : s.losses++;
-        s.recentForm.push(teamAWon ? "W" : "L");
+        s.wins++;
+        s.recentForm.push("W");
+      });
+
+      losers.forEach(p => {
+        const s = stats[p];
+        s.played++;
+        s.losses++;
+        s.recentForm.push("L");
+      });
+
+      // ✅ SETS & POINTS (shared)
+      teamAPlayers.forEach(p => {
+        stats[p].setsWon += setsA;
+        stats[p].setsLost += setsB;
+        stats[p].pointsWon += ptsA;
+        stats[p].pointsLost += ptsB;
       });
 
       teamBPlayers.forEach(p => {
-        const s = stats[p];
-        s.played++;
-        s.setsWon += bSets;
-        s.setsLost += aSets;
-        s.pointsWon += bPts;
-        s.pointsLost += aPts;
-        !teamAWon ? s.wins++ : s.losses++;
-        s.recentForm.push(!teamAWon ? "W" : "L");
+        stats[p].setsWon += setsB;
+        stats[p].setsLost += setsA;
+        stats[p].pointsWon += ptsB;
+        stats[p].pointsLost += ptsA;
       });
     });
   });
@@ -1336,6 +1297,56 @@ function computeIndividualPlayerStandings() {
     a.name.localeCompare(b.name)
   );
 }
+
+  const fixtures = dataCache.fixtures;
+  const results = dataCache.results || {};
+  const stats = {};
+
+  function initPlayer(name, team) {
+    return {
+      name,
+      team,
+      played: 0,
+      wins: 0,
+      losses: 0,
+      setsWon: 0,
+      setsLost: 0,
+      pointsWon: 0,
+      pointsLost: 0,
+      setDiff: 0,
+      pointDiff: 0,
+      winPct: 0,
+      recentForm: []   // ✅ STRICT match-level only
+    };
+  }
+
+  // Register players
+  fixtures.forEach(f => {
+    f.matches.forEach(pair => {
+      pair[0].split("/").forEach(p =>
+        stats[p.trim()] ??= initPlayer(p.trim(), f.team_a)
+      );
+      pair[1].split("/").forEach(p =>
+        stats[p.trim()] ??= initPlayer(p.trim(), f.team_b)
+      );
+    });
+  });
+
+  Object.entries(results).forEach(([tieId, r]) => {
+    const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
+    if (!fixture) return;
+
+    r.matches.forEach((m, idx) => {
+      if (!m || !m.sets) return;
+
+      const [pairA, pairB] = fixture.matches[idx];
+      const teamAPlayers = pairA.split("/").map(p => p.trim());
+      const teamBPlayers = pairB.split("/").map(p => p.trim());
+
+      let setsA = 0, setsB = 0;
+      let ptsA = 0, ptsB = 0;
+
+
 /****************===================================*/
 
 function showPlayerStandings(showAll = false) {
