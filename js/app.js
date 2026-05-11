@@ -1521,15 +1521,29 @@ const TEAM_COLORS = {
 };
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
-  const teamColor =
-  (typeof TEAM_COLORS !== "undefined" && TEAM_COLORS[player.team]) 
-    ? TEAM_COLORS[player.team]
-    : "#2563eb";
- /* const teamColor = TEAM_COLORS[player.team] || "#2563eb";*/
+  
+  // ✅ 1. Get player FIRST
   const players = computeIndividualPlayerStandings();
-  const player = players.find(
+  /*const player = players.find(p => p.name === playerName);*/
+    const player = players.find(
     p => normalizeName(p.name) === normalizeName(playerName)
   );
+
+  if (!player) {
+    alert("Player not found");
+    return;
+  }
+
+  // ✅ 2. Now safely use player
+  const teamColor =
+    (typeof TEAM_COLORS !== "undefined" && TEAM_COLORS[player.team])
+      ? TEAM_COLORS[player.team]
+      : "#2563eb";
+
+ 
+ /* const teamColor = TEAM_COLORS[player.team] || "#2563eb";*/
+  
+
 
   if (!player) {
     c.innerHTML = "<h2>Player not found</h2>";
