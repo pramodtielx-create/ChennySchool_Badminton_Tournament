@@ -1357,7 +1357,8 @@ function computeIndividualPlayerStandings() {
     p.setDiff = p.setsWon - p.setsLost;
     p.pointDiff = p.pointsWon - p.pointsLost;
     p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
-    p.recentForm = p.recentForm.slice(-5).join(" ");
+   /* p.recentForm = p.recentForm.slice(-5).join(" ");*/
+    p.recentForm = p.recentForm.slice(-5).reverse().join(" ");
   });
 
   return Object.values(stats).sort((a, b) =>
