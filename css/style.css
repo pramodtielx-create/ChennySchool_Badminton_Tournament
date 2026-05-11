@@ -374,3 +374,14 @@ body {
   margin: 4px 0;
   opacity: 0.8;
 }
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.squad-player-photo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
