@@ -2,12 +2,13 @@ const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGP
 
 const PLAYER_PHOTOS = {
   "Deepak L": "assets/players/deepak-l.png",
-  "Pradyum": "assets/players/pradyum.jpg",
-  "Kiran": "assets/players/kiran.jpg",
-  "Rahul": "assets/players/rahul.jpg",
-  "Omkar": "assets/players/omkar.jpg",
-  "Sandeep W": "assets/players/sandeep-w.jpg",
-  "Jaswanth": "assets/players/jaswanth.jpg"
+  "Pradyum": "assets/players/pradyum.png",
+  "Kiran": "assets/players/kiran.png",
+  "Rahul": "assets/players/rahul.png",
+  "Omkar": "assets/players/omkar.png",
+  "Sandeep W": "assets/players/sandeep-w.png",
+  "Jaswanth": "assets/players/jaswanth.png"
+   "Pramod": "assets/players/Pramod.png"
 };
 
 const TEAM_SQUADS_ORDERED = {
