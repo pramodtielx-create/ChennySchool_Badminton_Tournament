@@ -1,6 +1,8 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
 let lastPlayerProfileSource = "standings"; // default
-
+let previousTeamRanks = {};
+let teamSortKey = "leaguePoints";
+let teamSortAsc = false;
 const PLAYER_PHOTOS = {
   // ✅ Quantum Force
   "Rajendra": "assets/players/Rajendra.png",
@@ -723,6 +725,7 @@ window.renderPlayerView = renderPlayerView;
 window.showStandings = showStandings;
 window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
+window.showTeamStandings = showTeamStandings;
 
 
 
@@ -2072,4 +2075,98 @@ function toggleDarkMode() {
 
 if (localStorage.getItem("darkMode") === "true") {
   document.body.classList.add("dark");
+}
+function sortTeamStandings(key) {
+  if (teamSortKey === key) {
+    teamSortAsc = !teamSortAsc;
+  } else {
+    teamSortKey = key;
+    teamSortAsc = false;
+  }
+  showTeamStandings();
+}
+function showTeamStandings() {
+  if (!dataCache || !dataCache.fixtures) {
+    alert("Data not loaded yet");
+    return;
+  }
+
+  let teams = computeTeamStandings();
+
+  // ✅ Store initial ranks for arrows
+  if (Object.keys(previousTeamRanks).length === 0) {
+    teams.forEach((t, i) => {
+      previousTeamRanks[t.name] = i + 1;
+    });
+  }
+
+  // ✅ Sorting
+  teams.sort((a, b) => {
+    const A = a[teamSortKey];
+    const B = b[teamSortKey];
+    return teamSortAsc ? A - B : B - A;
+  });
+
+  const c = document.getElementById("main-content");
+
+  let html = `
+    <h2>🏆 Team Standings</h2>
+
+    <div class="team-standings">
+      <div class="standings-grid standings-header">
+        <div>Team</div>
+        <div>R</div>
+        <div onclick="sortTeamStandings('played')">P ⬍</div>
+        <div onclick="sortTeamStandings('wins')">W ⬍</div>
+        <div onclick="sortTeamStandings('losses')">L ⬍</div>
+        <div onclick="sortTeamStandings('setsWon')">SW ⬍</div>
+        <div onclick="sortTeamStandings('setsLost')">SL ⬍</div>
+        <div onclick="sortTeamStandings('pointsWon')">PW ⬍</div>
+        <div onclick="sortTeamStandings('pointsLost')">PL ⬍</div>
+        <div onclick="sortTeamStandings('setDiff')">SD ⬍</div>
+        <div onclick="sortTeamStandings('pointDiff')">PD ⬍</div>
+        <div onclick="sortTeamStandings('leaguePoints')">Pts ⬍</div>
+        <div>Form</div>
+      </div>
+  `;
+
+  teams.forEach((t, i) => {
+    const prev = previousTeamRanks[t.name];
+    const curr = i + 1;
+
+    let arrow = "";
+    if (prev && curr < prev) arrow = ` <span class="rank-up">↑</span>`;
+    if (prev && curr > prev) arrow = ` <span class="rank-down">↓</span>`;
+
+    html += `
+      <div class="standings-grid standings-row ${i < 2 ? "qualifier" : ""}">
+        <div class="team-name">
+          <span
+            style="
+              width:10px;
+              height:10px;
+              border-radius:50%;
+              background:${TEAM_COLORS[t.name] || "#64748b"};
+            "></span>
+          ${t.name}
+        </div>
+
+        <div>${curr}${arrow}</div>
+        <div>${t.played}</div>
+        <div>${t.wins}</div>
+        <div>${t.losses}</div>
+        <div>${t.setsWon}</div>
+        <div>${t.setsLost}</div>
+        <div>${t.pointsWon}</div>
+        <div>${t.pointsLost}</div>
+        <div>${t.setDiff}</div>
+        <div>${t.pointDiff}</div>
+        <div>${t.leaguePoints}</div>
+        <div>${renderForm(t.form)}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  c.innerHTML = html;
 }
