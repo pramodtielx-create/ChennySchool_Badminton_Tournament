@@ -1070,13 +1070,13 @@ function renderForm(formString) {
 }
 */
 function showStandings() {
-  const standings = computeTeamStandings();
-  const c = document.getElementById("main-content");
+  const container = document.getElementById("main-content");
 
   let html = `
     <h2>🏆 Team Standings</h2>
+    <div class="standings-wrapper">
 
-    <div class="fixture-card standings-wrapper">
+      <!-- Header -->
       <div class="standings-grid standings-header">
         <div>Team</div>
         <div>R</div>
@@ -1094,27 +1094,28 @@ function showStandings() {
       </div>
   `;
 
-  standings.forEach((t, i) => {
+  TEAM_STANDINGS.forEach(team => {
     html += `
-      <div class="standings-grid standings-row ${i < 2 ? "qualifier" : ""}">
-        <div>${t.name}</div>
-        <div>${i + 1}</div>
-        <div>${t.played}</div>
-        <div>${t.wins}</div>
-        <div>${t.losses}</div>
-        <div>${t.setsWon}</div>
-        <div>${t.setsLost}</div>
-        <div>${t.pointsWon}</div>
-        <div>${t.pointsLost}</div>
-        <div>${t.setDiff}</div>
-        <div>${t.pointDiff}</div>
-        <div>${t.leaguePoints}</div>
-        <div>${renderForm(t.form)}</div>
+      <div class="standings-grid standings-row">
+        <div>${team.name}</div>
+        <div>${team.rank}</div>
+        <div>${team.played}</div>
+        <div>${team.won}</div>
+        <div>${team.lost}</div>
+        <div>${team.setsWon}</div>
+        <div>${team.setsLost}</div>
+        <div>${team.pointsWon}</div>
+        <div>${team.pointsLost}</div>
+        <div>${team.setDiff}</div>
+        <div>${team.pointDiff}</div>
+        <div>${team.points}</div>
+        <div>${team.form}</div>
       </div>
     `;
   });
 
-  c.innerHTML = html + `</div>`;
+  html += `</div>`;
+  container.innerHTML = html;
 }
 
 /*
