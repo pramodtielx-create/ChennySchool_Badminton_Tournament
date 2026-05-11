@@ -188,3 +188,55 @@ button:focus-visible,
     transition: none !important;
   }
 }
+
+/* ======================================================
+   🔒 STRUCTURAL LOCK – UI RESTORE (DO NOT REMOVE)
+   ====================================================== */
+
+/* ---------- Sidebar must stay vertical ---------- */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  min-width: 240px;
+}
+
+/* Sidebar buttons must stack */
+.sidebar button {
+  display: block;
+  width: 100%;
+}
+
+/* ---------- Team squads UL reset ---------- */
+.player-list {
+  list-style: none;
+  padding: 8px 12px;
+  margin: 0;
+}
+
+/* ---------- Player rows MUST stay horizontal ---------- */
+.player-item,
+.player-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+}
+
+/* Remove accidental bullets everywhere */
+.player-item::marker,
+.player-list li::marker {
+  content: "";
+}
+
+/* ---------- Prevent top-menu collapse ---------- */
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Main content must not wrap sidebar */
+.content {
+  flex: 1;
+  min-width: 0;
+}
