@@ -1696,3 +1696,69 @@ body.dark .team-standings .standings-row:nth-child(even) {
     60px    /* Pts */
     140px;  /* Form */
 
+body {
+  font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+  .standings-row {
+  padding: 12px 0; /* instead of arbitrary values */
+}
+
+.standings-grid {
+  column-gap: 16px;
+}
+  .standings-header {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #5f6368; /* classic Google gray */
+}
+
+.standings-header {
+  border-bottom: 1px solid rgba(60,64,67,0.12);
+}
+
+.standings-row {
+  border-bottom: none;
+}
+
+.standings-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px rgba(60,64,67,0.1),
+    0 1px 3px rgba(60,64,67,0.15);
+}
+  .standings-row:hover {
+  background: rgba(66,133,244,0.04);
+}
+  .standings-header div {
+  cursor: pointer;
+  user-select: none;
+}
+
+.standings-header .sorted {
+  color: #1a73e8; /* Google blue */
+}
+
+:root {
+  --md-blue: #1a73e8;
+  --md-green: #34a853;
+  --md-red: #ea4335;
+  --md-gray: #5f6368;
+}
+
+.player-name-link {
+  color: var(--md-blue);
+}
+
+.form-W { color: var(--md-green); }
+.form-L { color: var(--md-red); }
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #3c4043;
+}
