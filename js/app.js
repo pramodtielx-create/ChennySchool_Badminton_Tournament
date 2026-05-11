@@ -1253,7 +1253,7 @@ function showPlayerStandings(showAll = false) {
         <div>${p.setDiff}</div>
         <div>${p.pointDiff}</div>
         <div>${p.winPct}</div>
-        <div>${renderForm(p.recentForm.replace(/ /g, ""))}</div>
+        <div>${renderForm(computeRecentFormForPlayer(p.name))}</div>
       </div>
     `;
   });
@@ -1282,12 +1282,11 @@ function computeIndividualPlayerStandings() {
       pointsLost: 0,
       setDiff: 0,
       pointDiff: 0,
-      winPct: 0,
-      recentForm: []   // match-level only
+      winPct: 0
     };
   }
 
-  // Register players
+  // ✅ Register all players
   fixtures.forEach(f => {
     f.matches.forEach(pair => {
       pair[0].split("/").forEach(p =>
@@ -1299,7 +1298,7 @@ function computeIndividualPlayerStandings() {
     });
   });
 
-  // Process matches ONCE per match
+  // ✅ Process each MATCH once
   Object.entries(results).forEach(([tieId, r]) => {
     const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
     if (!fixture) return;
@@ -1320,47 +1319,35 @@ function computeIndividualPlayerStandings() {
         a > b ? setsA++ : setsB++;
       });
 
-      const winners = setsA > setsB ? teamA : teamB;
-      const losers  = setsA > setsB ? teamB : teamA;
-
-      winners.forEach(p => {
-        const s = stats[p];
-        s.played++;
-        s.wins++;
-        s.recentForm.push("W");
-      });
-
-      losers.forEach(p => {
-        const s = stats[p];
-        s.played++;
-        s.losses++;
-        s.recentForm.push("L");
-      });
+      const teamAWon = setsA > setsB;
 
       teamA.forEach(p => {
-        stats[p].setsWon += setsA;
-        stats[p].setsLost += setsB;
-        stats[p].pointsWon += ptsA;
-        stats[p].pointsLost += ptsB;
+        const s = stats[p];
+        s.played++;
+        s.setsWon += setsA;
+        s.setsLost += setsB;
+        s.pointsWon += ptsA;
+        s.pointsLost += ptsB;
+        teamAWon ? s.wins++ : s.losses++;
       });
 
       teamB.forEach(p => {
-        stats[p].setsWon += setsB;
-        stats[p].setsLost += setsA;
-        stats[p].pointsWon += ptsB;
-        stats[p].pointsLost += ptsA;
+        const s = stats[p];
+        s.played++;
+        s.setsWon += setsB;
+        s.setsLost += setsA;
+        s.pointsWon += ptsB;
+        s.pointsLost += ptsA;
+        teamAWon ? s.losses++ : s.wins++;
       });
     });
   });
 
-  // ✅ FINALIZE (chronological recent form)
+  // ✅ Final calculations
   Object.values(stats).forEach(p => {
     p.setDiff = p.setsWon - p.setsLost;
     p.pointDiff = p.pointsWon - p.pointsLost;
     p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
-
-    // OLDEST → NEWEST (last 5 matches)
-    p.recentForm = p.recentForm.slice(-5).join(" ");
   });
 
   return Object.values(stats).sort((a, b) =>
@@ -1424,7 +1411,7 @@ function showPlayerStandings(showAll = false) {
         <div>${p.pointsWon}</div>
         <div>${p.pointsLost}</div>
         <div>${p.pointDiff}</div>
-        <div>${renderForm(p.recentForm.replace(/ /g, ""))}</div>
+        <div>${renderForm(computeRecentFormForPlayer(p.name))}</div>
       </div>
     `;
   });
@@ -1590,7 +1577,7 @@ function showPlayerProfile(playerName) {
       </div>
 
       <div class="summary">
-        Recent Form: ${renderForm(player.recentForm)}
+        Recent Form: ${renderForm(computeRecentFormForPlayer(player.name))}
       </div>
 
       <h3>Match History</h3>
@@ -1735,7 +1722,7 @@ function showPlayerStandings(showAll = false) {
         <div>${p.pointsWon}</div>
         <div>${p.pointsLost}</div>
         <div>${p.pointDiff}</div>
-        <div>${renderForm(p.recentForm.replace(/ /g, ""))}</div>
+        <div>${renderForm(computeRecentFormForPlayer(p.name))}</div>
       </div>
     `;
   });
@@ -1890,4 +1877,32 @@ function renderForm(form) {
         : `<span class="form-L">L</span>`
     )
     .join("");
+}
+
+
+
+function computeRecentFormForPlayer(playerName, limit = 5) {
+  const form = [];
+
+  dataCache.fixtures.forEach(f => {
+    const r = dataCache.results?.[f.tie_id];
+    if (!r) return;
+
+    f.matches.forEach((pair, idx) => {
+      if (!pair.join(" ").includes(playerName)) return;
+
+      const m = r.matches[idx];
+      if (!m || !m.sets) return;
+
+      let a = 0, b = 0;
+      m.sets.forEach(([x, y]) => (x > y ? a++ : b++));
+
+      const isInA = pair[0].includes(playerName);
+      const won = isInA ? a > b : b > a;
+
+      form.push(won ? "W" : "L");
+    });
+  });
+
+  return form.slice(-limit).join("");
 }
