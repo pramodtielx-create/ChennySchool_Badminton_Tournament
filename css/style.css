@@ -1046,23 +1046,45 @@ body {
   overflow: visible;
 }
 /* ======================================================
-   FINAL DEFINITIVE FIX – CSS GRID TEXT CLIPPING
+   FINAL DEFINITIVE FIX – MATCH HISTORY FLEX LAYOUT
    ====================================================== */
 
-/* Allow grid cells to shrink properly */
 .player-profile .result-row {
-  min-width: 0; /* ✅ required for CSS Grid */
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 14px;
 }
 
-/* Fixture column (3rd column in your layout) */
+/* vs */
+.player-profile .result-row > div:nth-child(1) {
+  width: 32px;
+  flex-shrink: 0;
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Opponent */
+.player-profile .result-row > div:nth-child(2) {
+  width: 220px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* Score */
 .player-profile .result-row > div:nth-child(3) {
-  min-width: 0;            /* ✅ THIS IS THE KEY */
-  white-space: normal;     /* allow wrapping */
-  overflow-wrap: break-word;
-  word-break: normal;
+  font-family: monospace;
+  white-space: nowrap;
+  margin-right: 8px;
+  font-weight: 600;
 }
 
-/* Ensure score column does not steal space */
+/* Fixture (THIS IS THE KEY FIX) */
 .player-profile .result-row > div:nth-child(4) {
-  white-space: nowrap;
+  flex: 1;                 /* ✅ take remaining space */
+  white-space: normal;
+  word-break: normal;
+  line-height: 1.3;
+  color: #334155;
 }
