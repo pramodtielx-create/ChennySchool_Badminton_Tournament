@@ -782,3 +782,108 @@ body {
 .player-profile .result-row:last-child {
   border-bottom: none;
 }
+@media (max-width: 768px) {
+
+  /* ================= PLAYER PROFILE ================= */
+
+  .player-profile {
+    padding: 12px;
+  }
+
+  /* Stack photo & info vertically */
+  .player-profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .player-photo {
+    width: 88px;
+    height: 88px;
+  }
+
+  .player-info h2 {
+    font-size: 22px;
+  }
+
+  .player-info p {
+    font-size: 14px;
+  }
+
+  /* Summary blocks */
+  .player-profile .summary {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  /* ================= MATCH HISTORY ================= */
+
+  /* Stack match rows vertically */
+  .player-profile .result-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* "vs" */
+  .player-profile .result-row div:nth-child(1) {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  /* Opponent + Score */
+  .player-profile .result-row div:nth-child(2) {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Score line */
+  .player-profile .result-row div:nth-child(2) span,
+  .player-profile .result-row div:nth-child(2) div:last-child {
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* Fixture moves under opponent */
+  .player-profile .result-row div:last-child {
+    text-align: left;
+    font-size: 12px;
+    color: #475569;
+  }
+
+  /* ================= TEAM SQUADS ================= */
+
+  .squads-grid {
+    grid-template-columns: 1fr; /* ✅ ONE COLUMN ON MOBILE */
+  }
+
+  .team-header {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .player-item {
+    padding: 8px 4px;
+    gap: 10px;
+  }
+
+  .squad-player-photo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .player-name {
+    font-size: 14px;
+  }
+
+  /* ================= BUTTONS ================= */
+
+  .back-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+  }
+}
