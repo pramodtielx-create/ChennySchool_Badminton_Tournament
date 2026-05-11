@@ -89,15 +89,7 @@ function normalizeName(name) {
 
 let dataCache = null
 
-/* INIT */
-async function init() {
-  const res = await fetch(API_URL);
-  dataCache = await res.json();
 
-  // ✅ DEFAULT VIEW
-  showTeamSquads();
-}
-init();
 
 
 /*===============================renderfixtures()=====================================*/
@@ -733,10 +725,13 @@ window.showPlayerStandings = showPlayerStandings;
 
 
 /* ================= INIT ================= */
+/* INIT */
 async function init() {
   const res = await fetch(API_URL);
   dataCache = await res.json();
-  showFixtures();
+
+  // ✅ DEFAULT VIEW
+  showTeamSquads();
 }
 init();
 
