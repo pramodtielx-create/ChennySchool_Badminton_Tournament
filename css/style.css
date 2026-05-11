@@ -1617,3 +1617,82 @@ body.dark .player-standings .standings-header {
     min-width: 1200px;
   }
 }
+/* ======================================================
+   ✅ TEAM STAND align-items: center;   ✅ TEAM STANDINGS – FINAL ENHANCEMENTS
+  column-gap: 14px;
+}
+
+/* Sticky header */
+.team-standings .standings-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #ffffff;
+  font-weight: 700;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Prevent wrapping */
+.team-standings .standings-grid > div {
+  white-space: nowrap;
+}
+
+/* Zebra rows */
+.team-standings .standings-row:nth-child(even) {
+  background: rgba(0,0,0,0.03);
+}
+
+/* Team name cell */
+.team-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+/* Rank arrows */
+.rank-up { color: #16a34a; font-weight: 700; }
+.rank-down { color: #dc2626; font-weight: 700; }
+
+/* Mobile scroll */
+@media (max-width: 900px) {
+  .team-standings .standings-grid {
+    min-width: 1100px;
+  }
+}
+
+/* Dark mode */
+body.dark .team-standings .standings-header {
+  background: #020617;
+  border-bottom-color: #334155;
+}
+
+body.dark .team-standings .standings-row:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+``
+   ====================================================== */
+
+.team-standings {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* Grid layout */
+.team-standings .standings-grid {
+  display: grid;
+  grid-template-columns:
+    220px   /* Team */
+    40px    /* R */
+    50px    /* P */
+    50px    /* W */
+    50px    /* L */
+    60px    /* SW */
+    60px    /* SL */
+    70px    /* PW */
+    70px    /* PL */
+    60px    /* SD */
+    60px    /* PD */
+    60px    /* Pts */
+    140px;  /* Form */
+
