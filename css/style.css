@@ -887,3 +887,12 @@ body {
     font-size: 14px;
   }
 }
+/* ==== FIX FIXTURE TEXT WRAPPING (DESKTOP + MOBILE) ==== */
+
+.player-profile .result-row div:last-child {
+  white-space: normal;      /* allow wrapping */
+  word-break: keep-all;     /* ✅ do NOT break words */
+  overflow-wrap: normal;    /* ✅ prevent word-per-line stacking */
+  line-height: 1.3;
+  max-width: 100%;
+}
