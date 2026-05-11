@@ -1,16 +1,39 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
 
 const PLAYER_PHOTOS = {
+const PLAYER_PHOTOS = {
+  // ✅ Quantum Force
+  "Rajendra": "assets/players/Rajendra.png",
   "Deepak L": "assets/players/deepak-l.png",
-  "Pradyum": "assets/players/pradyum.png",
-  "Kiran": "assets/players/kiran.png",
-  "Rahul": "assets/players/rahul.png",
-  "Omkar": "assets/players/omkar.png",
-  "Sandeep W": "assets/players/sandeep-w.png",
-  "Jaswanth": "assets/players/jaswanth.png"
-   "Pramod": "assets/players/Pramod.png"
- "Amit": "assets/players/Amit.png"
- "Jayant": "assets/players/Jayant.png"
+  "Aniket": "assets/players/Aniket.png",
+  "Rahul": "assets/players/Rahul.png",
+  "Manmohan": "assets/players/Manmohan.png",
+  "Prashant": "assets/players/Prashant.png",
+
+  // ✅ Racket Scientists
+  "Kiran": "assets/players/Kiran.png",
+  "Piyush": "assets/players/Piyush.png",
+  "Pradyum": "assets/players/Pradyum.png",
+  "Kaustubh": "assets/players/Kaustubh.png",
+  "Amol S": "assets/players/Amol-S.png",
+  "Amol P": "assets/players/Amol-P.png",
+
+  // ✅ Net Ninjas
+  "Jaswanth": "assets/players/Jaswanth.png",
+  "Sandeepk": "assets/players/Sandeepk.png",
+  "Ritesh": "assets/players/Ritesh.png",
+  "Vikram": "assets/players/Vikram.png",
+  "Pramod": "assets/players/Pramod.png",
+  "Deepak T": "assets/players/Deepak-T.png",
+
+  // ✅ Smash Titans
+  "Omkar": "assets/players/Omkar.png",
+  "Nishit": "assets/players/Nishit.png",
+  "Sandeep W": "assets/players/Sandeep-W.png",
+  "Ganesh": "assets/players/Ganesh.png",
+  "Jayant": "assets/players/Jayant.png",
+  "Amit": "assets/players/Amit.png"
+};
 };
 
 const TEAM_SQUADS_ORDERED = {
