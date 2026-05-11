@@ -20,16 +20,16 @@ const PLAYER_PHOTOS = {
 
   // ✅ Net Ninjas
   "Jaswanth": "assets/players/Jaswanth.png",
-  "Sandeepk": "assets/players/Sandeepk.png",
+  "Sandeepk": "assets/players/Sandeep-K.png",
   "Ritesh": "assets/players/Ritesh.png",
   "Vikram": "assets/players/Vikram.png",
-  "Pramod": "assets/players/Pramod.png",
+  "Pramod": "assets/players/pramod.png",
   "Deepak T": "assets/players/Deepak-T.png",
 
   // ✅ Smash Titans
   "Omkar": "assets/players/Omkar.png",
   "Nishit": "assets/players/Nishit.png",
-  "Sandeep W": "assets/players/Sandeep-W.png",
+  "Sandeep W": "assets/players/sandeep-w.png",
   "Ganesh": "assets/players/Ganesh.png",
   "Jayant": "assets/players/Jayant.png",
   "Amit": "assets/players/Amit.png"
