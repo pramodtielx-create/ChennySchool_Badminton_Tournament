@@ -1263,6 +1263,12 @@ function showPlayerStandings(showAll = false) {
 /*=======================================*/
 
 function computeIndividualPlayerStandings() {
+  
+if (!dataCache || !dataCache.fixtures) {
+    console.warn("Data not loaded yet – player standings skipped");
+    return [];
+  }
+
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
   const stats = {};
@@ -1520,19 +1526,25 @@ const TEAM_COLORS = {
   "Smash Titans": "#f97316"
 };
 function showPlayerProfile(playerName) {
-  const c = document.getElementById("main-content");
-  
-  // ✅ 1. Get player FIRST
+
+   if (!dataCache || !dataCache.fixtures) {
+    alert("Data is still loading. Please try again.");
+    return;
+  }
+
   const players = computeIndividualPlayerStandings();
-  /*const player = players.find(p => p.name === playerName);*/
-    const player = players.find(
-    p => normalizeName(p.name) === normalizeName(playerName)
-  );
+ const player = players.find(
+  p => normalizeName(p.name) === normalizeName(playerName)
+);
+
 
   if (!player) {
     alert("Player not found");
     return;
   }
+  const c = document.getElementById("main-content");
+  
+ 
 
   // ✅ 2. Now safely use player
   const teamColor =
