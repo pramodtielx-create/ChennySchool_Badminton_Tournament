@@ -1143,3 +1143,46 @@ body.dark .result-row {
 body.dark .sidebar {
   background: #020617;
 }
+
+/* ======================================================
+   DARK MODE – TEXT VISIBILITY FIX
+   ====================================================== */
+
+/* Team squad cards */
+body.dark .team-card {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* Player rows */
+body.dark .player-list li,
+body.dark .player-item {
+  color: #e5e7eb;               /* ✅ visible names */
+}
+
+/* Player name explicitly */
+body.dark .player-name {
+  color: #e5e7eb;
+}
+
+/* Dividers */
+body.dark .player-list li {
+  border-bottom: 1px solid #334155;
+}
+
+/* Hover state */
+body.dark .player-item:hover {
+  background: #1e293b;
+}
+
+/* Ensure headers remain strong */
+body.dark .team-header {
+  color: #ffffff;
+}
+
+/* Titles */
+body.dark h1,
+body.dark h2,
+body.dark h3 {
+  color: #f8fafc;
+}
