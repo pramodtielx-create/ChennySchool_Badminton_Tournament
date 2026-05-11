@@ -1521,7 +1521,11 @@ const TEAM_COLORS = {
 };
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
-  const teamColor = TEAM_COLORS[player.team] || "#2563eb";
+  const teamColor =
+  (typeof TEAM_COLORS !== "undefined" && TEAM_COLORS[player.team]) 
+    ? TEAM_COLORS[player.team]
+    : "#2563eb";
+ /* const teamColor = TEAM_COLORS[player.team] || "#2563eb";*/
   const players = computeIndividualPlayerStandings();
   const player = players.find(
     p => normalizeName(p.name) === normalizeName(playerName)
