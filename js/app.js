@@ -2087,7 +2087,38 @@ function sortTeamStandings(key) {
 }
 /*****====================showteamstanding===================================*/
 function showTeamStandings() {
- ings('wins')">W ⬍</div>  if (!dataCache || !dataCache.fixtures) {
+  if (!dataCache || !dataCache.fixtures) {
+    alert("Data not loaded yet");
+    return;
+  }
+
+  let teams = computeTeamStandings();
+
+  // ✅ Store initial ranks
+  if (Object.keys(previousTeamRanks).length === 0) {
+    teams.forEach((t, i) => {
+      previousTeamRanks[t.name] = i + 1;
+    });
+  }
+
+  // ✅ Sorting
+  teams.sort((a, b) => {
+    const A = a[teamSortKey];
+    const B = b[teamSortKey];
+    return teamSortAsc ? A - B : B - A;
+  });
+
+  const c = document.getElementById("main-content");
+
+  let html = `
+    <h2>🏆 Team Standings</h2>
+
+    <div class="team-standings">
+      <div class="standings-grid standings-header">
+        <div>Team</div>
+        <div>R</div>
+        <div onclick="sortTeamStandings('played')">P ⬍</div>
+        <div onclick="sortTeamStandings('wins')">W ⬍</div>
         <div onclick="sortTeamStandings('losses')">L ⬍</div>
         <div onclick="sortTeamStandings('setsWon')">SW ⬍</div>
         <div onclick="sortTeamStandings('setsLost')">SL ⬍</div>
@@ -2110,8 +2141,6 @@ function showTeamStandings() {
 
     html += `
       <div class="standings-grid standings-row ${i < 2 ? "qualifier" : ""}">
-        
-        <!-- ✅ Team -->
         <div class="team-name">
           <span style="
             width:10px;
@@ -2123,10 +2152,7 @@ function showTeamStandings() {
           ${t.name}
         </div>
 
-        <!-- ✅ Rank -->
         <div>${currRank}${arrow}</div>
-
-        <!-- ✅ Correct column order -->
         <div>${t.played}</div>
         <div>${t.wins}</div>
         <div>${t.losses}</div>
@@ -2145,33 +2171,3 @@ function showTeamStandings() {
   html += `</div>`;
   c.innerHTML = html;
 }
-    alert("Data not loaded yet");
-    return;
-  }
-
-  let teams = computeTeamStandings();
-
-  // ✅ remember previous ranks (for arrows)
-  if (Object.keys(previousTeamRanks).length === 0) {
-    teams.forEach((t, i) => {
-      previousTeamRanks[t.name] = i + 1;
-    });
-  }
-
-  // ✅ apply sorting
-  teams.sort((a, b) => {
-    const A = a[teamSortKey];
-    const B = b[teamSortKey];
-    return teamSortAsc ? A - B : B - A;
-  });
-
-  const c = document.getElementById("main-content");
-
-  let html = `
-    <h2>🏆 Team Standings</h2>
-
-    <div class="team-standings">
-      <div class="standings-grid standings-header">
-        <div>Team</div>
-        <div>R</div>
-        <div onclick="sortTeamStandings('played')">P ⬍</div>
