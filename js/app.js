@@ -1514,7 +1514,7 @@ function showPlayerStandings(showAll = false) {
  *************************************************/
 function showPlayerProfile(playerName) {
   const c = document.getElementById("main-content");
-
+  const teamColor = TEAM_COLORS[player.team] || "#2563eb";
   const players = computeIndividualPlayerStandings();
   const player = players.find(
     p => normalizeName(p.name) === normalizeName(playerName)
@@ -1551,7 +1551,8 @@ function showPlayerProfile(playerName) {
   c.innerHTML = `
     <div class="player-profile">
 
-      <div class="player-profile-header">
+    <div class="player-profile-header" style="border-left:5px solid ${teamColor}">
+
         <img src="${photo}" class="player-photo"
              onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
 
