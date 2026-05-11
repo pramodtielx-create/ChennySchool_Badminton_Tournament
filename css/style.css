@@ -1592,3 +1592,28 @@ body.dark .player-standings .standings-header {
 body.dark .player-standings .standings-row:nth-child(even) {
   background: rgba(255, 255, 255, 0.05);
 }
+/* Sticky header for Player Standings */
+.player-standings {
+  position: relative;
+  overflow-x: auto;
+}
+
+.player-standings .standings-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #ffffff;
+}
+
+body.dark .player-standings .standings-header {
+  background: #020617;
+}
+@media (max-width: 900px) {
+  .player-standings {
+    overflow-x: auto;
+  }
+
+  .standings-grid {
+    min-width: 1200px;
+  }
+}
