@@ -714,12 +714,13 @@ function showPlayerMatches(player) {
 
 
 
-/* EXPORT */
+/* ================= EXPORT ================= */
+
 window.showFixtures = showFixtures;
 window.showResults = showResults;
 window.renderTeamView = renderTeamView;
 window.renderPlayerView = renderPlayerView;
-window. = ;
+window.showStandings = showStandings;
 window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
 
