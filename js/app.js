@@ -1,6 +1,6 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
 
-const PLAYER_PHOTOS = {
+
 const PLAYER_PHOTOS = {
   // ✅ Quantum Force
   "Rajendra": "assets/players/Rajendra.png",
@@ -34,7 +34,7 @@ const PLAYER_PHOTOS = {
   "Jayant": "assets/players/Jayant.png",
   "Amit": "assets/players/Amit.png"
 };
-};
+
 
 const TEAM_SQUADS_ORDERED = {
   "Quantum Force": [
