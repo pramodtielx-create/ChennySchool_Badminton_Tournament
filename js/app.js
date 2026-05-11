@@ -1656,12 +1656,15 @@ function showTeamSquads() {
 
       html += `
         <li class="player-item"
-          onclick="
-  lastPlayerProfileSource='squads';
-  showPlayerProfile('${p.replace(/'/g, "\\'")}')"
-          <img src="${photo}"
-               class="squad-player-photo"
-               onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
+            onclick="
+              lastPlayerProfileSource='squads';
+              showPlayerProfile('${p.replace(/'/g, "\\'")}')
+            ">
+          <img
+            src="${photo}"
+            class="squad-player-photo"
+            onerror="this.src='${DEFAULT_PLAYER_PHOTO}'"
+          >
           <span class="player-name">${p}</span>
         </li>
       `;
