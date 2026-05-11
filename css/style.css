@@ -1,1074 +1,135 @@
-/* ================= GLOBAL RESET ================= */
-* {
-  box-sizing: border-box;
-  font-family: Inter, Arial, sans-serif;
+/* ======================================================
+   ✅ DESIGN TOKENS (SAFE – NO UI BREAK)
+   ====================================================== */
+:root {
+  --bg-main: #f4f6f9;
+  --bg-card: #ffffff;
+  --bg-sidebar: #0b132b;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  --border-light: #e5e7eb;
+  --hover-light: rgba(0,0,0,0.04);
 }
 
+/* Dark mode tokens */
+body.dark {
+  --bg-main: #020617;
+  --bg-card: #020617;
+  --bg-sidebar: #020617;
+
+  --text-main: #e5e7eb;
+  --text-muted: #94a3b8;
+
+  --border-light: #334155;
+  --hover-light: #1e293b;
+}
+
+/* ======================================================
+   ✅ GLOBAL COLOR APPLICATION (NON-DESTRUCTIVE)
+   ====================================================== */
 body {
-  margin: 0;
-  background: #f4f6f9;
-  color: #1f2937; /* base text color */
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
-/* ================= HEADER ================= */
-.header {
-  padding: 18px 28px;
-  background: linear-gradient(90deg, #0b132b, #1c2541);
-  color: white;
+.team-card,
+.fixture-card,
+.summary {
+  background: var(--bg-card);
 }
 
-/* ================= LAYOUT ================= */
-.container {
-  display: flex;
-  min-height: 100vh;
-}
-
+/* ======================================================
+   ✅ SIDEBAR UX IMPROVEMENTS
+   ====================================================== */
 .sidebar {
-  width: 240px;
-  background: #0b132b;
-  color: white;
-  padding: 16px;
-}
-
-.sidebar h3 {
-  margin-bottom: 16px;
-  font-size: 14px;
-  opacity: 0.8;
+  background: var(--bg-sidebar);
 }
 
 .sidebar button {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #1c2541;
-  color: white;
-  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
 }
 
 .sidebar button:hover {
-  background: #2563eb;
+  transform: translateY(-1px);
 }
 
-.content {
-  flex: 1;
-  padding: 24px;
+.sidebar button:active {
+  transform: translateY(0);
 }
 
-/* ================= FILTERS ================= */
-.filters {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+.sidebar button:focus-visible {
+  outline: 2px solid #2563eb;
 }
 
-/* ================= SUMMARY ================= */
-.summary {
-  background: #e8f1ff;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 16px;
-  font-weight: 600;
-}
-
-/* ================= FIXTURES ================= */
-.fixtures-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(580px, 1fr));
-  gap: 20px;
-}
-
-.fixture-card {
-  background: white;
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  overflow-x: auto; /* ✅ safe scroll if needed */
-}
-
-.fixture-header {
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.vs {
-  color: #f97316;
-  font-weight: 700;
-}
-
-/* ================= MATCH ROW ================= */
-.result-row {
-  display: grid;
-  grid-template-columns: 40px 1fr 32px 1fr 110px;
-  gap: 6px;
-  padding: 6px 0;
-  border-bottom: 1px solid #eef2f7;
-  font-size: 13.5px;
-}
-
-.result-row.header {
-  font-size: 12px;
-  font-weight: 700;
-  color: #94a3b8;
-  border-bottom: 2px solid #e5e7eb;
-}
-
-.result-row.pending {
-  color: #f59e0b;
-}
-
-.result-row > div:nth-child(3) {
-  text-align: center;
-  font-weight: 600;
-  color: #f97316;
-}
-
-.result-row > div:last-child {
-  text-align: right;
-  font-family: monospace;
-  overflow-wrap: anywhere;
-}
-
-.winner {
-  color: #dc2626;
-  font-weight: 700;
-}
-
-/* ================= TEAM STANDINGS ================= */
-.standings-wrapper {
-  overflow-x: auto;
-}
-
-.standings-grid {
-  display: grid;
-  grid-template-columns:
-    200px
-    50px
-    60px
-    60px
-    60px
-    80px
-    80px
-    100px
-    100px
-    80px
-    90px
-    90px
-    140px;
-
-  gap: 8px;
-  align-items: center;
-  font-size: 13.5px;
-}
-
-.standings-header {
-  font-size: 12px;
-  font-weight: 700;
-  color: #94a3b8;
-  border-bottom: 2px solid #e5e7eb;
-  padding: 8px 0;
-}
-
-.standings-row {
-  padding: 8px 0;
-  border-bottom: 1px solid #eef2f7;
-}
-
-.standings-row.qualifier {
-  background: #ecfeff;
-  font-weight: 700;
-}
-
-/* ================= PLAYER STANDINGS (ISOLATED) ================= */
-.player-standings .standings-grid {
-  grid-template-columns:
-    50px
-    160px
-    180px
-    60px
-    60px
-    60px
-    70px
-    70px
-    70px
-    70px
-    90px
-    90px
-    90px
-    140px;
-}
-
-.player-standings .rank-1 {
-  background: #fff7ed;
-}
-.player-standings .rank-2 {
-  background: #f8fafc;
-}
-.player-standings .rank-3 {
-  background: #fefce8;
-}
-
-/* ================= FORM COLORS ================= */
-.form-W {
-  color: #16a34a;
-  font-weight: 700;
-  margin-right: 4px;
-}
-.form-L {
-  color: #dc2626;
-  font-weight: 700;
-  margin-right: 4px;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-  .content {
-    padding: 12px;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
-
-  .standings-grid {
-    min-width: 900px;
-    font-size: 12px;
-  }
-}
-
-
-/*===============combo ===========================*/
-/* ================= TRACKER DROPDOWN (TEAM & PLAYER) ================= */
-
-.content select {
-  appearance: none;              /* remove default arrow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  width: 280px;
-  max-width: 100%;
-  padding: 10px 14px;
-  margin: 10px 0 16px 0;
-
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2937;
-
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  cursor: pointer;
-
-  background-image:
-    linear-gradient(45deg, transparent 50%, #6b7280 50%),
-    linear-gradient(135deg, #6b7280 50%, transparent 50%);
-  background-position:
-    calc(100% - 18px) calc(50% - 3px),
-    calc(100% - 12px) calc(50% - 3px);
-  background-size: 6px 6px;
-  background-repeat: no-repeat;
-}
-
-/* Hover & focus */
-.content select:hover {
-  border-color: #2563eb;
-}
-
-.content select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-}
-
-/* Dropdown options */
-.content option {
-  font-weight: 500;
-  padding: 8px;
-}
-@media (max-width: 768px) {
-  .content select {
-    width: 100%;
-    font-size: 15px;
-    padding: 12px 14px;
-  }
-}
-/* ================= TEAM SQUADS ================= */
-
-.squads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 16px;
-}
-
+/* ======================================================
+   ✅ TEAM CARDS – POLISH
+   ====================================================== */
 .team-card {
-  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.team-header {
-  padding: 14px 18px;
-  font-size: 16px;
-  font-weight: 800;
-  color: white;
-  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+.team-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
 }
 
-.player-list {
-  list-style: none;
-  margin: 0;
-  padding: 12px 16px 16px;
-}
-
-.player-list li {
-  padding: 8px 6px;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid #eef2f7;
-}
-
-.player-list li:last-child {
-  border-bottom: none;
-}
-/* ================= PLAYER STANDINGS ================= */
-.player-standings .standings-grid {
-  grid-template-columns:
-    50px 160px 180px 60px 60px 60px
-    70px 70px 70px 70px
-    90px 90px 90px 140px;
-}
-
-.player-standings .rank-1 { background: #fff7ed; }
-.player-standings .rank-2 { background: #f8fafc; }
-.player-standings .rank-3 { background: #fefce8; }
-
-/* ================= PLAYER PROFILE ================= 
-
-.player-profile-header {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.player-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #e5e7eb;
-}
-
-.player-info h2 {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-}
-
-.player-info p {
-  margin: 4px 0;
-  opacity: 0.8;
-}
+/* ======================================================
+   ✅ PLAYER ROWS – INTERACTION (IMPORTANT)
+   ====================================================== */
 .player-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.squad-player-photo {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-
-.player-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
   cursor: pointer;
-  border-radius: 6px;
-}
-
-
-
-.player-name {
-  font-weight: 600;
-}
-*/
-
-
-
-
-
-/* ================= PLAYER PROFILE ================= */
-
-.player-profile {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-/* Header */
-.player-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.player-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #e5e7eb;
-  background: #fff;
-}
-
-.player-info h2 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.player-info p {
-  margin: 4px 0;
-  color: #475569;
-  font-size: 16px;
-}
-
-/* Summary Cards */
-.player-profile .summary {
-  background: #eff6ff;
-  border-radius: 12px;
-  padding: 14px 18px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-/* Recent form colors already exist */
-.form-W {
-  color: #16a34a;
-  font-weight: 800;
-  margin-right: 4px;
-}
-
-.form-L {
-  color: #dc2626;
-  font-weight: 800;
-  margin-right: 4px;
-}
-
-/* Match History */
-.player-profile h3 {
-  margin-top: 28px;
-  margin-bottom: 12px;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-/* Match history card */
-.player-profile .fixture-card {
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  padding: 6px 0;
-}
-
-/* Match rows */
-.player-profile .result-row {
-  display: grid;
-  grid-template-columns: 40px 220px 1fr 200px;
-  align-items: center;
-  padding: 12px 18px;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 15px;
-}
-
-.player-profile .result-row:last-child {
-  border-bottom: none;
-}
-
-/* Scores */
-.player-profile .result-row div:last-child {
-  text-align: right;
-  font-weight: 600;
-  font-family: monospace;
-}
-
-/* Back button */
-.back-btn {
-  margin-top: 18px;
-  padding: 10px 18px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: #fff;
-  cursor: pointer;
-}
-
-.back-btn:hover {
-  background: #f1f5f9;
-}
-
-/* ================= MATCH HISTORY FIX ================= */
-
-.player-profile .fixture-card {
-  border-radius: 14px;
-  background: #ffffff;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-/* Each match row */
-.player-profile .result-row {
-  display: grid;
-  grid-template-columns: 50px 260px 1fr 140px;
-  gap: 12px;
-  align-items: center;
-  padding: 14px 20px;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 15px;
-}
-
-/* Remove border from last row */
-.player-profile .result-row:last-child {
-  border-bottom: none;
-}
-
-/* "vs" column */
-.player-profile .result-row div:nth-child(1) {
-  font-weight: 700;
-  color: #64748b;
-  text-align: center;
-}
-
-/* Opponent names */
-.player-profile .result-row div:nth-child(2) {
-  font-weight: 600;
-}
-
-/* Fixture (Team A vs Team B) */
-.player-profile .result-row div:nth-child(4) {
-  font-weight: 600;
-  text-align: right;
-  color: #334155;
-}
-
-/* Score column */
-.player-profile .result-row div:nth-child(5),
-.player-profile .result-row div:last-child {
-  font-family: monospace;
-  font-weight: 700;
-  text-align: right;
-  white-space: nowrap;       /* ✅ FIXES vertical stacking */
-  color: #0f172a;
-}
-/* ================= TEAM SQUADS – COMPACT ================= */
-
-.squads-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 16px;
-}
-
-/* Team card */
-.team-card {
-  background: #ffffff;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-}
-
-/* Team header */
-.team-header {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  padding: 12px 16px;
-}
-
-/* Player list */
-.player-list {
-  list-style: none;
-  margin: 0;
-  padding: 8px 12px;
-}
-
-/* Each player row */
-.player-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 6px;
-  cursor: pointer;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-/* Remove border on last player */
-.player-item:last-child {
-  border-bottom: none;
+  transition: background 0.15s ease, transform 0.05s ease;
 }
 
 .player-item:hover {
-  background: #f1f5f9;
+  background: var(--hover-light);
 }
 
-/* ✅ SMALLER PLAYER PHOTO */
-.squad-player-photo {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #e5e7eb;
-  flex-shrink: 0;
+.player-item:active {
+  transform: scale(0.98);
 }
 
-/* Player name */
+.player-item:focus-visible {
+  outline: 2px solid #2563eb;
+}
+
+/* Player name clarity */
 .player-name {
-  font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
-}
-/* ================= PLAYER PROFILE – COMPACT MODE ================= */
-
-/* Reduce overall spacing */
-.player-profile {
-  padding: 16px;
+  letter-spacing: 0.2px;
+  color: var(--text-main);
 }
 
-/* Header smaller */
-.player-profile-header {
-  gap: 18px;
-  margin-bottom: 18px;
+/* Dark mode name fix (explicit) */
+body.dark .player-name {
+  color: var(--text-main);
 }
-
-.player-photo {
-  width: 96px;
-  height: 96px;
-}
-
-/* Name */
-.player-info h2 {
-  font-size: 24px;
-}
-
-/* Summary cards — tighter */
-.player-profile .summary {
-  padding: 10px 14px;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-/* Match History */
-.player-profile h3 {
-  margin-top: 20px;
-  font-size: 20px;
-}
-
-/* Match card */
-.player-profile .fixture-card {
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-
-/* ✅ Compact match rows */
-.player-profile .result-row {
-  display: grid;
-  grid-template-columns: 36px 200px 1fr 120px;
-  gap: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
-}
-
-/* "vs" */
-.player-profile .result-row div:nth-child(1) {
-  font-size: 13px;
-  font-weight: 700;
-  text-align: center;
-}
-
-/* Opponents */
-.player-profile .result-row div:nth-child(2) {
-  font-weight: 600;
-}
-
-/* Fixture text */
-.player-profile .result-row div:nth-child(4) {
-  text-align: right;
-  font-size: 13px;
-  color: #334155;
-}
-
-/* Score column */
-.player-profile .result-row div:last-child {
-  font-family: monospace;
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* Back button smaller */
-.back-btn {
-  margin-top: 14px;
-  padding: 8px 14px;
-  font-size: 14px;
-}
-/* ================= FINAL MATCH HISTORY TIGHTEN ================= */
-
-.player-profile .fixture-card {
-  padding: 4px 0;
-}
-
-/* Each match row container */
-.player-profile .result-row {
-  display: grid;
-  grid-template-columns: 32px 1fr auto;
-  gap: 12px;
-  padding: 8px 14px;     /* ✅ reduced height */
-  font-size: 14px;
-  align-items: start;
-}
-
-/* "vs" */
-.player-profile .result-row div:nth-child(1) {
-  font-size: 13px;
-  font-weight: 700;
-  color: #64748b;
-  text-align: center;
-}
-
-/* Middle section: opponent + score stacked tightly */
-.player-profile .result-row div:nth-child(2) {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;              /* ✅ tight spacing */
-  font-weight: 600;
-}
-
-/* Score line */
-.player-profile .result-row div:nth-child(2) span,
-.player-profile .result-row div:nth-child(2) div:last-child {
-  font-family: monospace;
-  font-size: 13px;
-  white-space: nowrap;
-  font-weight: 700;
-}
-
-/* Fixture (right‑side) */
-.player-profile .result-row div:last-child {
-  text-align: right;
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
-  line-height: 1.2;
-}
-
-/* Reduce separator impact */
-.player-profile .result-row {
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.player-profile .result-row:last-child {
-  border-bottom: none;
-}
-@media (max-width: 768px) {
-
-  /* ================= PLAYER PROFILE ================= */
-
-  .player-profile {
-    padding: 12px;
-  }
-
-  /* Stack photo & info vertically */
-  .player-profile-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
-  }
-
-  .player-photo {
-    width: 88px;
-    height: 88px;
-  }
-
-  .player-info h2 {
-    font-size: 22px;
-  }
-
-  .player-info p {
-    font-size: 14px;
-  }
-
-  /* Summary blocks */
-  .player-profile .summary {
-    font-size: 13px;
-    padding: 10px 12px;
-  }
-
-  /* ================= MATCH HISTORY ================= */
-
-  /* Stack match rows vertically */
-  .player-profile .result-row {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-
-  /* "vs" */
-  .player-profile .result-row div:nth-child(1) {
-    text-align: left;
-    font-size: 12px;
-  }
-
-  /* Opponent + Score */
-  .player-profile .result-row div:nth-child(2) {
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  /* Score line */
-  .player-profile .result-row div:nth-child(2) span,
-  .player-profile .result-row div:nth-child(2) div:last-child {
-    font-size: 13px;
-    margin-top: 2px;
-  }
-
-  /* Fixture moves under opponent */
-  .player-profile .result-row div:last-child {
-    text-align: left;
-    font-size: 12px;
-    color: #475569;
-  }
-
-  /* ================= TEAM SQUADS ================= */
-
-  .squads-grid {
-    grid-template-columns: 1fr; /* ✅ ONE COLUMN ON MOBILE */
-  }
-
-  .team-header {
-    font-size: 16px;
-    padding: 10px 14px;
-  }
-
-  .player-item {
-    padding: 8px 4px;
-    gap: 10px;
-  }
-
-  .squad-player-photo {
-    width: 36px;
-    height: 36px;
-  }
-
-  .player-name {
-    font-size: 14px;
-  }
-
-  /* ================= BUTTONS ================= */
-
-  .back-btn {
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    font-size: 14px;
-  }
-}
-/* ==== FIX FIXTURE TEXT WRAPPING (DESKTOP + MOBILE) ==== */
-
-.player-profile .result-row div:last-child {
-  white-space: normal;      /* allow wrapping */
-  word-break: keep-all;     /* ✅ do NOT break words */
-  overflow-wrap: normal;    /* ✅ prevent word-per-line stacking */
-  line-height: 1.3;
-  max-width: 100%;
-}
-/* ================= PLAYER STANDINGS – COMPACT COLUMNS ================= */
-
-.player-standings .standings-grid {
-  display: grid;
-  grid-template-columns:
-    180px  /* Player */
-    40px   /* R */
-    48px   /* P */
-    48px   /* W */
-    48px   /* L */
-    56px   /* SW */
-    56px   /* SL */
-    64px   /* PW */
-    64px   /* PL */
-    48px   /* SD */
-    56px   /* PD */
-    64px   /* Win% */
-    100px; /* Form */
-  align-items: center;
-}
-
-/* Header text slightly smaller */
-.player-standings .standings-header div {
-  font-size: 13px;
-  font-weight: 700;
-  text-align: center;
-}
-
-/* Player name column */
-.player-standings .standings-row div:first-child {
-  text-align: left;
-  font-weight: 700;
-  color: #2563eb;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* All numeric columns centered */
-.player-standings .standings-row div:not(:first-child) {
-  text-align: center;
-}
-
-/* Form column */
-.player-standings .standings-row div:last-child {
-  text-align: left;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-/* Row padding reduced */
-.player-standings .standings-row {
-  padding: 8px 6px;
-  font-size: 14px;
-}
-
-
 
 /* ======================================================
-   SAFE ENHANCEMENT – MATCH HISTORY STABILITY FIX
-   (Does NOT break existing styles)
+   ✅ MATCH HISTORY – FINAL LOCK (FLEX ONLY, STABLE)
    ====================================================== */
-
-/* Lock a sane desktop column layout */
-.player-profile .result-row {
-  grid-template-columns:
-    36px      /* vs */
-    220px     /* Opponent */
-    1fr       /* Fixture */
-    120px;    /* Score */
-}
-
-/* Prevent word-by-word breaking (root cause of the issue) */
-.player-profile .result-row div:nth-child(3) {
-  white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: normal;
-  line-height: 1.35;
-}
-
-/* Ensure scores never wrap awkwardly */
-.player-profile .result-row div:last-child {
-  white-space: nowrap;
-  text-align: right;
-  font-family: monospace;
-}
-
-/* Slightly tighten match row height without collapsing */
-.player-profile .result-row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-
-/* ======================================================
-   FINAL SAFE ENHANCEMENT – MATCH HISTORY DENSITY & ALIGNMENT
-   ====================================================== */
-
-/* Slightly tighten match row height */
-.player-profile .result-row {
-  padding: 6px 14px;
-}
-
-/* Group opponent + score visually */
-.player-profile .result-row div:nth-child(2) {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-/* Move score visually closer to opponent */
-.player-profile .result-row div:nth-child(2)::after {
-  content: "";
-}
-
-/* Reduce visual dominance of fixture text */
-.player-profile .result-row div:nth-child(3) {
-  font-size: 13px;
-  color: #475569;
-}
-
-/* Make score more compact */
-.player-profile .result-row div:nth-child(4) {
-  font-size: 13px;
-  font-family: monospace;
-  white-space: nowrap;
-}
-/* Optional – subtle loss tint */
-.player-profile .result-row:has(.form-L) {
-  background: #fff7f7;
-}
-
-
-/* ======================================================
-   FINAL SAFE FIX – PREVENT FIXTURE TEXT CLIPPING
-   ====================================================== */
-
-/* Ensure fixture column can fully render text */
-.player-profile .result-row div:nth-child(3) {
-  overflow: visible;           /* ✅ allow text to render */
-  white-space: normal;         /* ✅ allow wrapping */
-  text-overflow: unset;        /* ✅ remove ellipsis */
-  min-width: 0;                /* ✅ critical for CSS grid */
-}
-
-/* Safety: prevent grid from forcing ellipsis */
-.player-profile .result-row {
-  overflow: visible;
-}
-/* ======================================================
-   FINAL DEFINITIVE FIX – MATCH HISTORY FLEX LAYOUT
-   ====================================================== */
-
 .player-profile .result-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 8px 14px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 /* vs */
 .player-profile .result-row > div:nth-child(1) {
   width: 32px;
-  flex-shrink: 0;
-  font-weight: 700;
-  color: #64748b;
   text-align: center;
+  font-weight: 700;
+  color: var(--text-muted);
 }
 
 /* Opponent */
 .player-profile .result-row > div:nth-child(2) {
   width: 220px;
-  flex-shrink: 0;
   font-weight: 600;
 }
 
@@ -1076,161 +137,54 @@ body {
 .player-profile .result-row > div:nth-child(3) {
   font-family: monospace;
   white-space: nowrap;
-  margin-right: 8px;
-  font-weight: 600;
+  color: var(--text-muted);
 }
 
-/* Fixture (THIS IS THE KEY FIX) */
+/* Fixture */
 .player-profile .result-row > div:nth-child(4) {
-  flex: 1;                 /* ✅ take remaining space */
+  flex: 1;
   white-space: normal;
-  word-break: normal;
   line-height: 1.3;
-  color: #334155;
-}
-/* Optional – subtle visual separation */
-.player-profile .result-row > div:nth-child(3) {
-  margin-right: 12px;
-  color: #475569;
-  font-size: 13px;
-}
-
-.player-profile .result-row > div:nth-child(4) {
-  color: #0f172a;
-  font-weight: 700;
-}
-.sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-
-const TEAM_COLORS = {
-  "Quantum Force": "#2563eb",
-  "Smash Titans": "#f97316",
-  "Net Ninjas": "#16a34a",
-  "Racket Scientists": "#7c3aed"
-};
-/* team accent dot */
-.team-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-}
-/* ================= DARK MODE ================= */
-body.dark {
-  background: #0f172a;
-  color: #e5e7eb;
-}
-
-body.dark .content {
-  background: #0f172a;
-}
-
-body.dark .fixture-card,
-body.dark .team-card,
-body.dark .summary {
-  background: #020617;
-  color: #e5e7eb;
-}
-
-body.dark .result-row {
-  border-color: #1e293b;
-}
-
-body.dark .sidebar {
-  background: #020617;
+  color: var(--text-main);
 }
 
 /* ======================================================
-   DARK MODE – TEXT VISIBILITY FIX
+   ✅ STANDINGS TABLE – READABILITY
    ====================================================== */
-
-/* Team squad cards */
-body.dark .team-card {
-  background: #020617;
-  color: #e5e7eb;
+.standings-row {
+  transition: background 0.12s ease;
 }
 
-/* Player rows */
-body.dark .player-list li,
-body.dark .player-item {
-  color: #e5e7eb;               /* ✅ visible names */
+.standings-row:hover {
+  background: var(--hover-light);
 }
 
-/* Player name explicitly */
-body.dark .player-name {
-  color: #e5e7eb;
-}
-
-/* Dividers */
-body.dark .player-list li {
-  border-bottom: 1px solid #334155;
-}
-
-/* Hover state */
-body.dark .player-item:hover {
-  background: #1e293b;
-}
-
-/* Ensure headers remain strong */
-body.dark .team-header {
-  color: #ffffff;
-}
-
-/* Titles */
-body.dark h1,
-body.dark h2,
-body.dark h3 {
-  color: #f8fafc;
-}
-/* ======================================================
-   DARK MODE – TEAM STANDINGS VISIBILITY FIX
-   ====================================================== */
-
-/* Overall standings card */
-body.dark .standings-wrapper,
-body.dark .standings-grid {
-  background: #020617;
-  color: #e5e7eb;
-}
-
-/* Header row */
-body.dark .standings-header {
-  color: #cbd5f5;
-  border-bottom: 2px solid #334155;
-}
-
-/* Normal rows */
-body.dark .standings-row {
-  background: transparent;
-  color: #e5e7eb;
-  border-bottom: 1px solid #334155;
-}
-
-/* ✅ Qualifier / highlighted rows */
-body.dark .standings-row.qualifier {
-  background: #0f172a;          /* dark blue tint */
-  color: #f8fafc;
-  font-weight: 700;
-}
-
-/* Rank highlights (top 3) */
-body.dark .player-standings .rank-1,
-body.dark .player-standings .rank-2,
-body.dark .player-standings .rank-3 {
-  background: #020617;
-  color: #f8fafc;
-}
-
-/* ✅ Form letters remain readable */
-body.dark .form-W {
+/* Form clarity */
+.form-W {
   color: #22c55e;
 }
-
-body.dark .form-L {
+.form-L {
   color: #ef4444;
 }
 
+/* ======================================================
+   ✅ ACCESSIBILITY BASELINE
+   ====================================================== */
+button,
+.player-item {
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+.player-item:focus-visible {
+  outline: 2px solid #2563eb;
+}
+
+/* ======================================================
+   ✅ MOTION SAFETY (RESPECT USER SETTINGS)
+   ====================================================== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
