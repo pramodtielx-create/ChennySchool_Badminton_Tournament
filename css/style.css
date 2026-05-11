@@ -268,3 +268,83 @@ button:focus-visible,
 .header button:hover {
   background: #2563eb;
 }
+/* ======================================================
+   ✅ TEAM MATCH TRACKER – READABILITY & STRUCTURE
+   ====================================================== */
+
+/* Wrap entire tracker content */
+.team-tracker {
+  background: var(--bg-card, #ffffff);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  margin-top: 12px;
+}
+
+/* Match series header (Team A vs Team B) */
+.team-tracker h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+/* Individual match blocks (M1, M2, M3…) */
+.team-tracker .match-block {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg-main, #f8fafc);
+  margin-bottom: 12px;
+  border: 1px solid var(--border-light, #e5e7eb);
+}
+
+/* Match title (M1, M2…) */
+.team-tracker .match-title {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+/* Player rows */
+.team-tracker .players {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 600;
+}
+
+/* VS separator */
+.team-tracker .vs {
+  text-align: center;
+  font-weight: 700;
+  color: #f97316;
+  margin: 4px 0;
+}
+
+/* Score styling */
+.team-tracker .score {
+  font-family: monospace;
+  font-weight: 700;
+  margin-top: 6px;
+  color: #0f172a;
+}
+
+/* Trophy winner emphasis */
+.team-tracker .winner {
+  color: #16a34a;
+  margin-right: 4px;
+}
+
+/* Dark mode */
+body.dark .team-tracker {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body.dark .team-tracker .match-block {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark .team-tracker .score {
+  color: #e5e7eb;
+}
