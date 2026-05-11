@@ -1180,7 +1180,7 @@ function computePlayerStandings() {
 
 
 function showPlayerStandings(showAll = false) {
-  const players = computeIndividualPlayerStandings();
+  const players = ;
   const list = showAll ? players : players.slice(0, 10);
   const c = document.getElementById("main-content");
 
@@ -1235,7 +1235,131 @@ function showPlayerStandings(showAll = false) {
  /* c.innerHTML = html + `</div>`;*/
   c.innerHTML = `<div class="player-standings">${html}</div>`;
 }
+/*
+function computeIndividualPlayerStandings() {
+  const fixtures = dataCache.fixtures;
+  const results = dataCache.results || {};
+  const stats = {};
 
+  function initPlayer(name, team) {
+    return {
+      name,
+      team,
+      played: 0,
+      wins: 0,
+      losses: 0,
+      setsWon: 0,
+      setsLost: 0,
+      pointsWon: 0,
+      pointsLost: 0,
+      setDiff: 0,
+      pointDiff: 0,
+      winPct: 0,
+      recentForm: []
+    };
+  }
+
+  // ✅ Assign teams
+  fixtures.forEach(f => {
+    f.matches.forEach(pair => {
+      pair[0].split("/").forEach(p => {
+        const n = p.trim();
+        stats[n] ??= initPlayer(n, f.team_a);
+      });
+      pair[1].split("/").forEach(p => {
+        const n = p.trim();
+        stats[n] ??= initPlayer(n, f.team_b);
+      });
+    });
+  });
+
+  // ✅ Process matches
+  Object.entries(results).forEach(([tieId, r]) => {
+    const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
+    if (!fixture) return;
+
+    r.matches.forEach((m, idx) => {
+      if (!m || !m.sets) return;
+
+      const [pairA, pairB] = fixture.matches[idx];
+      const teamAPlayers = pairA.split("/").map(p => p.trim());
+      const teamBPlayers = pairB.split("/").map(p => p.trim());
+
+      let aSets = 0, bSets = 0;
+      let aPts = 0, bPts = 0;
+
+      // ✅ Count sets & points
+      m.sets.forEach(([a, b]) => {
+        aPts += a;
+        bPts += b;
+        a > b ? aSets++ : bSets++;
+      });
+
+      const teamAWon = aSets > bSets;
+
+      // ✅ Track players updated in THIS match
+      const matchTouched = new Set();
+
+      // ✅ Team A
+      teamAPlayers.forEach(p => {
+        const s = stats[p];
+        s.played++;
+        s.setsWon += aSets;
+        s.setsLost += bSets;
+        s.pointsWon += aPts;
+        s.pointsLost += bPts;
+
+        if (!matchTouched.has(p)) {
+          if (teamAWon) {
+            s.wins++;
+            s.recentForm.push("W");
+          } else {
+            s.losses++;
+            s.recentForm.push("L");
+          }
+          matchTouched.add(p);
+        }
+      });
+
+      // ✅ Team B
+      teamBPlayers.forEach(p => {
+        const s = stats[p];
+        s.played++;
+        s.setsWon += bSets;
+        s.setsLost += aSets;
+        s.pointsWon += bPts;
+        s.pointsLost += aPts;
+
+        if (!matchTouched.has(p)) {
+          if (!teamAWon) {
+            s.wins++;
+            s.recentForm.push("W");
+          } else {
+            s.losses++;
+            s.recentForm.push("L");
+          }
+          matchTouched.add(p);
+        }
+      });
+    });
+  });
+
+  // ✅ Final numbers
+  Object.values(stats).forEach(p => {
+    p.setDiff = p.setsWon - p.setsLost;
+    p.pointDiff = p.pointsWon - p.pointsLost;
+    p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
+    p.recentForm = p.recentForm.slice(-5).join(" ");
+  });
+
+  return Object.values(stats).sort((a, b) =>
+    b.wins - a.wins ||
+    b.setDiff - a.setDiff ||
+    b.pointDiff - a.pointDiff ||
+    a.played - b.played ||
+    a.name.localeCompare(b.name)
+  );
+}*/
 function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
