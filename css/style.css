@@ -1299,3 +1299,220 @@ body.dark .standings-header {
 body.dark .standings-row:nth-child(even) {
   background: rgba(255, 255, 255, 0.05);
 }
+/* ======================================================
+   PLAYER STANDINGS – FINAL, PRODUCTION‑SAFE CSS
+   ====================================================== */
+
+/* Main grid layout: MUST match column count */
+.standings-grid {
+  display: grid;
+  grid-template-columns:
+    40px        /* Rank (R) */
+    160px       /* Player */
+    200px       /* Team */
+    50px        /* Played (P) */
+    50px        /* Wins (W) */
+    50px        /* Losses (L) */
+    70px        /* Win% */
+    50px        /* Sets Won (SW) */
+    50px        /* Sets Lost (SL) */
+    50px        /* Set Diff (SD) */
+    70px        /* Points Won (PW) */
+    70px        /* Points Lost (PL) */
+    60px        /* Point Diff (PD) */
+    140px;      /* Form */
+
+  align-items: center;
+  column-gap: 14px; /* ✅ prevents Player + Team collision */
+}
+
+/* Prevent text wrapping inside cells */
+.standings-grid > div {
+  white-space: nowrap;
+}
+
+/* Header row styling */
+.standings-header {
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+/* Row spacing */
+.standings-row {
+  padding: 10px 0;
+}
+
+/* Alternate row background */
+.standings-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* Player name emphasis */
+.player-name-link {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Form spacing */
+.standings-grid .form-W,
+.standings-grid .form-L {
+  margin-right: 4px;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .standings-header {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+body.dark .standings-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+/* ======================================================
+   PLAYER STANDINGS – FINAL, PRODUCTION‑SAFE CSS
+   ====================================================== */
+
+/* Main grid layout: MUST match column count */
+.standings-grid {
+  display: grid;
+  grid-template-columns:
+    40px        /* Rank (R) */
+    160px       /* Player */
+    200px       /* Team */
+    50px        /* Played (P) */
+    50px        /* Wins (W) */
+    50px        /* Losses (L) */
+    70px        /* Win% */
+    50px        /* Sets Won (SW) */
+    50px        /* Sets Lost (SL) */
+    50px        /* Set Diff (SD) */
+    70px        /* Points Won (PW) */
+    70px        /* Points Lost (PL) */
+    60px        /* Point Diff (PD) */
+    140px;      /* Form */
+
+  align-items: center;
+  column-gap: 14px; /* ✅ prevents Player + Team collision */
+}
+
+/* Prevent text wrapping inside cells */
+.standings-grid > div {
+  white-space: nowrap;
+}
+
+/* Header row styling */
+.standings-header {
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+/* Row spacing */
+.standings-row {
+  padding: 10px 0;
+}
+
+/* Alternate row background */
+.standings-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* Player name emphasis */
+.player-name-link {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Form spacing */
+.standings-grid .form-W,
+.standings-grid .form-L {
+  margin-right: 4px;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .standings-header {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+body.dark .standings-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ======================================================
+   PLAYER STANDINGS – FINAL, PRODUCTION‑SAFE CSS
+   ====================================================== */
+
+/* Main grid layout: MUST match column count */
+.standings-grid {
+  display: grid;
+  grid-template-columns:
+    40px        /* Rank (R) */
+    160px       /* Player */
+    200px       /* Team */
+    50px        /* Played (P) */
+    50px        /* Wins (W) */
+    50px        /* Losses (L) */
+    70px        /* Win% */
+    50px        /* Sets Won (SW) */
+    50px        /* Sets Lost (SL) */
+    50px        /* Set Diff (SD) */
+    70px        /* Points Won (PW) */
+    70px        /* Points Lost (PL) */
+    60px        /* Point Diff (PD) */
+    140px;      /* Form */
+
+  align-items: center;
+  column-gap: 14px; /* ✅ prevents Player + Team collision */
+}
+
+/* Prevent text wrapping inside cells */
+.standings-grid > div {
+  white-space: nowrap;
+}
+
+/* Header row styling */
+.standings-header {
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 8px;
+}
+
+/* Row spacing */
+.standings-row {
+  padding: 10px 0;
+}
+
+/* Alternate row background */
+.standings-row:nth-child(even) {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* Player name emphasis */
+.player-name-link {
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Form spacing */
+.standings-grid .form-W,
+.standings-grid .form-L {
+  margin-right: 4px;
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .standings-header {
+  color: #94a3b8;
+  border-bottom-color: #334155;
+}
+
+body.dark .standings-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.05);
+}
