@@ -896,3 +896,58 @@ body {
   line-height: 1.3;
   max-width: 100%;
 }
+/* ================= PLAYER STANDINGS – COMPACT COLUMNS ================= */
+
+.player-standings .standings-grid {
+  display: grid;
+  grid-template-columns:
+    180px  /* Player */
+    40px   /* R */
+    48px   /* P */
+    48px   /* W */
+    48px   /* L */
+    56px   /* SW */
+    56px   /* SL */
+    64px   /* PW */
+    64px   /* PL */
+    48px   /* SD */
+    56px   /* PD */
+    64px   /* Win% */
+    100px; /* Form */
+  align-items: center;
+}
+
+/* Header text slightly smaller */
+.player-standings .standings-header div {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Player name column */
+.player-standings .standings-row div:first-child {
+  text-align: left;
+  font-weight: 700;
+  color: #2563eb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* All numeric columns centered */
+.player-standings .standings-row div:not(:first-child) {
+  text-align: center;
+}
+
+/* Form column */
+.player-standings .standings-row div:last-child {
+  text-align: left;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+/* Row padding reduced */
+.player-standings .standings-row {
+  padding: 8px 6px;
+  font-size: 14px;
+}
