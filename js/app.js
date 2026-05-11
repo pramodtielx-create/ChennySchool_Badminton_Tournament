@@ -1986,3 +1986,14 @@ function computeRecentFormForPlayer(playerName, limit = 5) {
 
   return form.slice(-limit).join("");
 }
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "darkMode",
+    document.body.classList.contains("dark")
+  );
+}
+
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark");
+}
