@@ -518,3 +518,57 @@ body {
 .back-btn:hover {
   background: #f1f5f9;
 }
+
+/* ================= MATCH HISTORY FIX ================= */
+
+.player-profile .fixture-card {
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* Each match row */
+.player-profile .result-row {
+  display: grid;
+  grid-template-columns: 50px 260px 1fr 140px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 15px;
+}
+
+/* Remove border from last row */
+.player-profile .result-row:last-child {
+  border-bottom: none;
+}
+
+/* "vs" column */
+.player-profile .result-row div:nth-child(1) {
+  font-weight: 700;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Opponent names */
+.player-profile .result-row div:nth-child(2) {
+  font-weight: 600;
+}
+
+/* Fixture (Team A vs Team B) */
+.player-profile .result-row div:nth-child(4) {
+  font-weight: 600;
+  text-align: right;
+  color: #334155;
+}
+
+/* Score column */
+.player-profile .result-row div:nth-child(5),
+.player-profile .result-row div:last-child {
+  font-family: monospace;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;       /* ✅ FIXES vertical stacking */
+  color: #0f172a;
+}
