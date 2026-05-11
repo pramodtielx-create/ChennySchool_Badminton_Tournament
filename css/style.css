@@ -640,3 +640,87 @@ body {
   font-weight: 600;
   color: #0f172a;
 }
+/* ================= PLAYER PROFILE – COMPACT MODE ================= */
+
+/* Reduce overall spacing */
+.player-profile {
+  padding: 16px;
+}
+
+/* Header smaller */
+.player-profile-header {
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.player-photo {
+  width: 96px;
+  height: 96px;
+}
+
+/* Name */
+.player-info h2 {
+  font-size: 24px;
+}
+
+/* Summary cards — tighter */
+.player-profile .summary {
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Match History */
+.player-profile h3 {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+/* Match card */
+.player-profile .fixture-card {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* ✅ Compact match rows */
+.player-profile .result-row {
+  display: grid;
+  grid-template-columns: 36px 200px 1fr 120px;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+/* "vs" */
+.player-profile .result-row div:nth-child(1) {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Opponents */
+.player-profile .result-row div:nth-child(2) {
+  font-weight: 600;
+}
+
+/* Fixture text */
+.player-profile .result-row div:nth-child(4) {
+  text-align: right;
+  font-size: 13px;
+  color: #334155;
+}
+
+/* Score column */
+.player-profile .result-row div:last-child {
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Back button smaller */
+.back-btn {
+  margin-top: 14px;
+  padding: 8px 14px;
+  font-size: 14px;
+}
