@@ -1119,7 +1119,7 @@ function showStandings() {
   c.innerHTML = html + `</div>`;
 }
 
-
+/*
 function computePlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
@@ -1204,7 +1204,7 @@ function computePlayerStandings() {
 }
 
 
-
+*/
 function showPlayerStandings(showAll = false) {
   const players = computeIndividualPlayerStandings();
   const list = showAll ? players : players.slice(0, 10);
@@ -1283,11 +1283,11 @@ function computeIndividualPlayerStandings() {
       setDiff: 0,
       pointDiff: 0,
       winPct: 0,
-      recentForm: []
+      recentForm: []   // match-level only
     };
   }
 
-  // Register all players
+  // Register players
   fixtures.forEach(f => {
     f.matches.forEach(pair => {
       pair[0].split("/").forEach(p =>
@@ -1299,7 +1299,7 @@ function computeIndividualPlayerStandings() {
     });
   });
 
-  // Process completed matches
+  // Process matches ONCE per match
   Object.entries(results).forEach(([tieId, r]) => {
     const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
     if (!fixture) return;
@@ -1353,12 +1353,14 @@ function computeIndividualPlayerStandings() {
     });
   });
 
+  // ✅ FINALIZE (chronological recent form)
   Object.values(stats).forEach(p => {
     p.setDiff = p.setsWon - p.setsLost;
     p.pointDiff = p.pointsWon - p.pointsLost;
     p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
-   /* p.recentForm = p.recentForm.slice(-5).join(" ");*/
-    p.recentForm = p.recentForm.slice(-5).reverse().join(" ");
+
+    // OLDEST → NEWEST (last 5 matches)
+    p.recentForm = p.recentForm.slice(-5).join(" ");
   });
 
   return Object.values(stats).sort((a, b) =>
