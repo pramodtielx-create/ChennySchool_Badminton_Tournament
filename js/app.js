@@ -1640,38 +1640,45 @@ function showPlayerProfile(playerName) {
 }
 */
 function showTeamSquads() {
-  const title="View Profile">  const c = document.getElementById("main-content");
-                  <img src="${photo}"
-                       class="squad-player-photo"
-                       onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
-                  <span class="player-name">${p}</span>
-                </li>
-              `;
-            }).join("")}
-          </ul>
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
+  const c = document.getElementById("main-content");
   const teams = buildTeamSquads();
 
-  c.innerHTML = `
+  let html = `
     <h2>🎽 Team Squads</h2>
-
     <div class="squads-grid">
-      ${Object.entries(teams).map(([team, players]) => `
-        <div class="team-card">
-          <div class="team-header">${team}</div>
+  `;
 
-          <ul class="player-list">
-            ${players.map(p => {
-              const photo =
-                PLAYER_PHOTOS[normalizeName(p)] || DEFAULT_PLAYER_PHOTO;
+  Object.entries(teams).forEach(([team, players]) => {
+    html += `
+      <div class="team-card">
+        <div class="team-header">${team}</div>
+        <ul class="player-list">
+    `;
 
-              return `
-                <li class="player-item"
-                    onclick="showPlayerProfile('${p.replace(/'/g, "\\'")}')"
+    players.forEach(p => {
+      const photo =
+        PLAYER_PHOTOS[normalizeName(p)] || DEFAULT_PLAYER_PHOTO;
+
+      html += `
+        <li class="player-item"
+            onclick="showPlayerProfile('${p.replace(/'/g, "\\'")}')">
+          <img src="${photo}"
+               class="squad-player-photo"
+               onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
+          <span class="player-name">${p}</span>
+        </li>
+      `;
+    });
+
+    html += `
+        </ul>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  c.innerHTML = html;
+}
 
 /*************************************************
  * BUILD TEAM → PLAYERS MAP
