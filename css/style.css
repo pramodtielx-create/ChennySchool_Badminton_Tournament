@@ -1104,3 +1104,42 @@ body {
   top: 0;
   height: 100vh;
 }
+
+const TEAM_COLORS = {
+  "Quantum Force": "#2563eb",
+  "Smash Titans": "#f97316",
+  "Net Ninjas": "#16a34a",
+  "Racket Scientists": "#7c3aed"
+};
+/* team accent dot */
+.team-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+/* ================= DARK MODE ================= */
+body.dark {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+body.dark .content {
+  background: #0f172a;
+}
+
+body.dark .fixture-card,
+body.dark .team-card,
+body.dark .summary {
+  background: #020617;
+  color: #e5e7eb;
+}
+
+body.dark .result-row {
+  border-color: #1e293b;
+}
+
+body.dark .sidebar {
+  background: #020617;
+}
