@@ -725,6 +725,7 @@ window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
 
 
+
 /* ================= INIT ================= */
 /* INIT */
 async function init() {
@@ -1226,6 +1227,7 @@ function showPlayerStandings(showAll = false) {
     <div class="fixture-card standings-wrapper">
       <div class="standings-grid standings-header">
         <div>Player</div>
+        <div>Team</div>
         <div>R</div>
         <div>P</div>
         <div>W</div>
@@ -1267,7 +1269,7 @@ function showPlayerStandings(showAll = false) {
 }
 
 /*=======================================*/
-
+/*
 function computeIndividualPlayerStandings() {
   
 if (!dataCache || !dataCache.fixtures) {
@@ -1367,7 +1369,99 @@ if (!dataCache || !dataCache.fixtures) {
     a.played - b.played ||
     a.name.localeCompare(b.name)
   );
+}*/
+
+function computeIndividualPlayerStandings() {
+  if (!dataCache || !dataCache.fixtures) return [];
+
+  const fixtures = dataCache.fixtures;
+  const results = dataCache.results || {};
+  const players = {};
+
+  function initPlayer(name, team) {
+    return {
+      name,
+      team,
+      played: 0,
+      wins: 0,
+      losses: 0,
+      setsWon: 0,
+      setsLost: 0,
+      pointsWon: 0,
+      pointsLost: 0,
+      setDiff: 0,
+      pointDiff: 0,
+      winPct: 0
+    };
+  }
+
+  fixtures.forEach(f => {
+    const res = results[f.tie_id];
+    if (!res) return;
+
+    f.matches.forEach((pair, idx) => {
+      const m = res.matches[idx];
+      if (!m || !m.sets) return;
+
+      const teamAPlayers = pair[0].split("/").map(p => p.trim());
+      const teamBPlayers = pair[1].split("/").map(p => p.trim());
+
+      teamAPlayers.forEach(p => {
+        players[p] ??= initPlayer(p, f.team_a);
+      });
+      teamBPlayers.forEach(p => {
+        players[p] ??= initPlayer(p, f.team_b);
+      });
+
+      let setsA = 0, setsB = 0;
+      let ptsA = 0, ptsB = 0;
+
+      m.sets.forEach(([a, b]) => {
+        ptsA += a;
+        ptsB += b;
+        a > b ? setsA++ : setsB++;
+      });
+
+      const teamAWon = setsA > setsB;
+
+      teamAPlayers.forEach(p => {
+        const pl = players[p];
+        pl.played++;
+        pl.setsWon += setsA;
+        pl.setsLost += setsB;
+        pl.pointsWon += ptsA;
+        pl.pointsLost += ptsB;
+        teamAWon ? pl.wins++ : pl.losses++;
+      });
+
+      teamBPlayers.forEach(p => {
+        const pl = players[p];
+        pl.played++;
+        pl.setsWon += setsB;
+        pl.setsLost += setsA;
+        pl.pointsWon += ptsB;
+        pl.pointsLost += ptsA;
+        teamAWon ? pl.losses++ : pl.wins++;
+      });
+    });
+  });
+
+  Object.values(players).forEach(p => {
+    p.setDiff = p.setsWon - p.setsLost;
+    p.pointDiff = p.pointsWon - p.pointsLost;
+    p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
+  });
+
+  // ✅ SORTING LOGIC (IMPORTANT)
+  return Object.values(players).sort((a, b) =>
+    b.wins - a.wins ||
+    b.setDiff - a.setDiff ||
+    b.pointDiff - a.pointDiff ||
+    a.played - b.played ||
+    a.name.localeCompare(b.name)
+  );
 }
+
 /****************===================================*/
 
 function showPlayerStandings(showAll = false) {
@@ -1377,50 +1471,46 @@ function showPlayerStandings(showAll = false) {
 
   let html = `
     <h2>👤 Player Standings</h2>
-    <p style="opacity:.7">Ranked based on Wins → Set Diff → Point Diff → Played</p>
+    <p style="opacity:.7">
+      Sorted by Wins → Set Diff → Point Diff → Played
+    </p>
 
-    <label style="display:inline-flex;gap:6px;margin-bottom:12px">
-     
-      Show All Players
-    </label>
-
-    <div class="fixture-card">
+    <div class="fixture-card standings-wrapper">
       <div class="standings-grid standings-header">
-        <div>R</div>
         <div>Player</div>
         <div>Team</div>
+        <div>R</div>
         <div>P</div>
         <div>W</div>
         <div>L</div>
-        <div>Win%</div>
-        <div>SW</div>
-        <div>SL</div>
         <div>SD</div>
-        <div>PW</div>
-        <div>PL</div>
         <div>PD</div>
-        <div>Recent Form</div>
+        <div>Win%</div>
+        <div>Form</div>
       </div>
   `;
 
   list.forEach((p, i) => {
     html += `
-    <div class="standings-grid standings-row">
-     
+      <div class="standings-grid standings-row rank-${i + 1}">
+        <div
+          class="player-name-link"
+          onclick="
+            lastPlayerProfileSource='standings';
+            showPlayerProfile('${p.name.replace(/'/g, "\\'")}')
+          "
+        >
+          ${p.name}
+        </div>
 
-        <div>${i + 1}</div>
-        <div>${p.name}</div>
         <div>${p.team}</div>
+        <div>${i + 1}</div>
         <div>${p.played}</div>
         <div>${p.wins}</div>
         <div>${p.losses}</div>
-        <div>${p.winPct}</div>
-        <div>${p.setsWon}</div>
-        <div>${p.setsLost}</div>
         <div>${p.setDiff}</div>
-        <div>${p.pointsWon}</div>
-        <div>${p.pointsLost}</div>
         <div>${p.pointDiff}</div>
+        <div>${p.winPct}</div>
         <div>${renderForm(computeRecentFormForPlayer(p.name))}</div>
       </div>
     `;
@@ -1428,6 +1518,7 @@ function showPlayerStandings(showAll = false) {
 
   c.innerHTML = html + `</div>`;
 }
+
 /*******************new******************************/
 /*************************************************
  * PLAYER PROFILE PAGE
