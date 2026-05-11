@@ -1264,63 +1264,7 @@ function showPlayerStandings(showAll = false) {
 
 /*=======================================*/
 
-function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
-        ptsA += a;
-        ptsB += b;
-        a > b ? setsA++ : setsB++;
-      });
-
-      const winners = setsA > setsB ? teamAPlayers : teamBPlayers;
-      const losers  = setsA > setsB ? teamBPlayers : teamAPlayers;
-
-      // ✅ UPDATE STATS
-      winners.forEach(p => {
-        const s = stats[p];
-        s.played++;
-        s.wins++;
-        s.recentForm.push("W");
-      });
-
-      losers.forEach(p => {
-        const s = stats[p];
-        s.played++;
-        s.losses++;
-        s.recentForm.push("L");
-      });
-
-      // ✅ SETS & POINTS (shared)
-      teamAPlayers.forEach(p => {
-        stats[p].setsWon += setsA;
-        stats[p].setsLost += setsB;
-        stats[p].pointsWon += ptsA;
-        stats[p].pointsLost += ptsB;
-      });
-
-      teamBPlayers.forEach(p => {
-        stats[p].setsWon += setsB;
-        stats[p].setsLost += setsA;
-        stats[p].pointsWon += ptsB;
-        stats[p].pointsLost += ptsA;
-      });
-    
-  
-
-  Object.values(stats).forEach(p => {
-    p.setDiff = p.setsWon - p.setsLost;
-    p.pointDiff = p.pointsWon - p.pointsLost;
-    p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
-    p.recentForm = p.recentForm.slice(-5).join(" ");
-  });
-
-  return Object.values(stats).sort((a, b) =>
-    b.wins - a.wins ||
-    b.setDiff - a.setDiff ||
-    b.pointDiff - a.pointDiff ||
-    a.played - b.played ||
-    a.name.localeCompare(b.name)
-  );
-}
-
+function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
   const stats = {};
@@ -1339,11 +1283,11 @@ function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
       setDiff: 0,
       pointDiff: 0,
       winPct: 0,
-      recentForm: []   // ✅ STRICT match-level only
+      recentForm: []
     };
   }
 
-  // Register players
+  // Register all players
   fixtures.forEach(f => {
     f.matches.forEach(pair => {
       pair[0].split("/").forEach(p =>
@@ -1355,6 +1299,7 @@ function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
     });
   });
 
+  // Process completed matches
   Object.entries(results).forEach(([tieId, r]) => {
     const fixture = fixtures.find(f => String(f.tie_id) === String(tieId));
     if (!fixture) return;
@@ -1363,13 +1308,66 @@ function computeIndividualPlayerStandings() {functionEach(([a, b]) => {
       if (!m || !m.sets) return;
 
       const [pairA, pairB] = fixture.matches[idx];
-      const teamAPlayers = pairA.split("/").map(p => p.trim());
-      const teamBPlayers = pairB.split("/").map(p => p.trim());
+      const teamA = pairA.split("/").map(p => p.trim());
+      const teamB = pairB.split("/").map(p => p.trim());
 
       let setsA = 0, setsB = 0;
       let ptsA = 0, ptsB = 0;
 
+      m.sets.forEach(([a, b]) => {
+        ptsA += a;
+        ptsB += b;
+        a > b ? setsA++ : setsB++;
+      });
 
+      const winners = setsA > setsB ? teamA : teamB;
+      const losers  = setsA > setsB ? teamB : teamA;
+
+      winners.forEach(p => {
+        const s = stats[p];
+        s.played++;
+        s.wins++;
+        s.recentForm.push("W");
+      });
+
+      losers.forEach(p => {
+        const s = stats[p];
+        s.played++;
+        s.losses++;
+        s.recentForm.push("L");
+      });
+
+      teamA.forEach(p => {
+        stats[p].setsWon += setsA;
+        stats[p].setsLost += setsB;
+        stats[p].pointsWon += ptsA;
+        stats[p].pointsLost += ptsB;
+      });
+
+      teamB.forEach(p => {
+        stats[p].setsWon += setsB;
+        stats[p].setsLost += setsA;
+        stats[p].pointsWon += ptsB;
+        stats[p].pointsLost += ptsA;
+      });
+    });
+  });
+
+  Object.values(stats).forEach(p => {
+    p.setDiff = p.setsWon - p.setsLost;
+    p.pointDiff = p.pointsWon - p.pointsLost;
+    p.winPct = p.played ? Math.round((p.wins / p.played) * 100) : 0;
+    p.recentForm = p.recentForm.slice(-5).join(" ");
+  });
+
+  return Object.values(stats).sort((a, b) =>
+    b.wins - a.wins ||
+    b.setDiff - a.setDiff ||
+    b.pointDiff - a.pointDiff ||
+    a.played - b.played ||
+    a.name.localeCompare(b.name)
+  );
+}
 /****************===================================*/
 
 function showPlayerStandings(showAll = false) {
