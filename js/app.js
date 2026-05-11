@@ -699,7 +699,7 @@ window.showResults = showResults;
 window.renderTeamView = renderTeamView;
 window.renderPlayerView = renderPlayerView;
 window.showStandings = showStandings;
-window.showPlayerStandings = showPlayerStand;
+window.showPlayerStandings = showPlayerStandings;
 
 
 
