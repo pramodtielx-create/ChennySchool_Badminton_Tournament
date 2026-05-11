@@ -1640,24 +1640,11 @@ function showPlayerProfile(playerName) {
 }
 */
 function showTeamSquads() {
-  const c = document.getElementById("main-content");
-  const teams = buildTeamSquads();
-
-  c.innerHTML = `
-    <h2>🎽 Team Squads</h2>
-    <div class="squads-grid">
-      ${Object.entries(teams).map(([team, players]) => `
-        <div class="team-card">
-          <div class="team-header">${team}</div>
-          <ul class="player-list">
-            ${players.map(p => {
-              const photo =
-                PLAYER_PHOTOS[normalizeName(p)] || DEFAULT_PLAYER_PHOTO;
-              return `
-                <li class="player-item">
-                  <img src="${photo}" class="squad-player-photo"
+  const title="View Profile">  const c = document.getElementById("main-content");
+                  <img src="${photo}"
+                       class="squad-player-photo"
                        onerror="this.src='${DEFAULT_PLAYER_PHOTO}'">
-                  <span>${p}</span>
+                  <span class="player-name">${p}</span>
                 </li>
               `;
             }).join("")}
@@ -1667,6 +1654,25 @@ function showTeamSquads() {
     </div>
   `;
 }
+  const teams = buildTeamSquads();
+
+  c.innerHTML = `
+    <h2>🎽 Team Squads</h2>
+
+    <div class="squads-grid">
+      ${Object.entries(teams).map(([team, players]) => `
+        <div class="team-card">
+          <div class="team-header">${team}</div>
+
+          <ul class="player-list">
+            ${players.map(p => {
+              const photo =
+                PLAYER_PHOTOS[normalizeName(p)] || DEFAULT_PLAYER_PHOTO;
+
+              return `
+                <li class="player-item"
+                    onclick="showPlayerProfile('${p.replace(/'/g, "\\'")}')"
+
 /*************************************************
  * BUILD TEAM → PLAYERS MAP
  *************************************************/
