@@ -988,3 +988,42 @@ body {
   padding-top: 8px;
   padding-bottom: 8px;
 }
+
+
+/* ======================================================
+   FINAL SAFE ENHANCEMENT – MATCH HISTORY DENSITY & ALIGNMENT
+   ====================================================== */
+
+/* Slightly tighten match row height */
+.player-profile .result-row {
+  padding: 6px 14px;
+}
+
+/* Group opponent + score visually */
+.player-profile .result-row div:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Move score visually closer to opponent */
+.player-profile .result-row div:nth-child(2)::after {
+  content: "";
+}
+
+/* Reduce visual dominance of fixture text */
+.player-profile .result-row div:nth-child(3) {
+  font-size: 13px;
+  color: #475569;
+}
+
+/* Make score more compact */
+.player-profile .result-row div:nth-child(4) {
+  font-size: 13px;
+  font-family: monospace;
+  white-space: nowrap;
+}
+/* Optional – subtle loss tint */
+.player-profile .result-row:has(.form-L) {
+  background: #fff7f7;
+}
