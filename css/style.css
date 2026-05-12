@@ -1862,3 +1862,72 @@ label {
     margin-bottom: 12px;
   }
 }
+/* ======================================================
+   DARK MODE – TEXT CONTRAST FIX (GOOGLE STYLE)
+   ====================================================== */
+
+body.dark {
+  --text-primary: #e8eaed;    /* Google dark mode primary */
+  --text-secondary: #bdc1c6;  /* Metadata, labels */
+  --text-tertiary: #9aa0a6;   /* Hints, subtle info */
+}
+
+/* Player profile header */
+body.dark .player-profile h2 {
+  color: var(--text-primary);
+}
+
+body.dark .player-profile p,
+body.dark .player-profile .team-name,
+body.dark .player-profile .rank {
+  color: var(--text-secondary);
+}
+
+/* Stats rows (Played, Wins, Sets, Points) */
+body.dark .player-profile .summary {
+  color: var(--text-primary);
+}
+
+/* Match history */
+body.dark .fixture-card,
+body.dark .match-history {
+  color: var(--text-primary);
+}
+
+/* Opponent & fixture metadata */
+body.dark .result-row div,
+body.dark .result-row span {
+  color: var(--text-secondary);
+}
+
+/* Make scores stand out */
+body.dark .result-row .score,
+body.dark .result-score {
+  color: var(--text-primary);
+}
+
+/* Section headers */
+body.dark h3,
+body.dark h4 {
+  color: var(--text-primary);
+}
+
+/* Buttons */
+body.dark button,
+body.dark .btn {
+  color: #020617;
+}
+
+/* Back button fix (important) */
+body.dark .back-btn {
+  background: #ffffff;
+  color: #020617;
+}
+
+/* Ensure links stay readable */
+body.dark a {
+  color: #8ab4f8; /* Google dark mode blue */
+}
+  body.dark .player-profile .summary {
+  font-weight: 500;
+}
