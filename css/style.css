@@ -1781,3 +1781,84 @@ label {
   outline: 2px solid #1a73e8;
   outline-offset: 2px;
 }
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #0b1220;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+  @media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 260px;
+    height: 100vh;
+    background: #0b1220;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+  @media (max-width: 600px) {
+  .filters {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .filters label {
+    white-space: nowrap;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+  @media (max-width: 900px) {
+  .standings-wrapper {
+    overflow-x: auto;
+  }
+
+  .standings-grid {
+    min-width: 1100px;
+  }
+}
+  @media (max-width: 600px) {
+  .standings-grid {
+    display: none;
+  }
+
+  .standings-cards {
+    display: block;
+  }
+
+  .standings-card {
+    background: #121a2f;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+}
