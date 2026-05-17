@@ -2254,11 +2254,22 @@ function openKnockoutMatch(id) {
   }
 }
 function renderKnockoutMatches() {
+
+  if (!dataCache) {
+    alert("Data is still loading. Please wait...");
+    return;
+  }
+
   const grid = document.getElementById("knockout-grid");
   grid.innerHTML = "";
 
   const knockouts = dataCache.knockouts || [];
   const results = dataCache.results || {};
+
+  if (knockouts.length === 0) {
+    grid.innerHTML = "<p style='opacity:.7'>No knockout data available</p>";
+    return;
+  }
 
   knockouts.forEach(f => {
     const r = results[f.tie_id];
@@ -2299,15 +2310,15 @@ function renderKnockoutMatches() {
       let a = 0, b = 0;
       m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
 
-      const w = a > b ? 0 : 1;
+      const winner = a > b ? 0 : 1;
       const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
       html += `
         <div class="result-row">
           <div>M${i + 1}</div>
-          <div>${w === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
           <div>vs</div>
-          <div>${w === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
           <div>${score}</div>
         </div>
       `;
@@ -2317,8 +2328,13 @@ function renderKnockoutMatches() {
     grid.appendChild(card);
   });
 }
-
 function showKnockoutFixtures() {
+
+  if (!dataCache) {
+    alert("Data still loading. Try again in a second.");
+    return;
+  }
+
   const c = document.getElementById("main-content");
 
   c.innerHTML = `
