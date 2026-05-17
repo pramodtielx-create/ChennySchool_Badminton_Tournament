@@ -2253,3 +2253,78 @@ function openKnockoutMatch(id) {
     renderMatchCard("Smash Titans", "Racket Scientists");
   }
 }
+function renderKnockoutMatches() {
+  const grid = document.getElementById("knockout-grid");
+  grid.innerHTML = "";
+
+  const knockouts = dataCache.knockouts || [];
+  const results = dataCache.results || {};
+
+  knockouts.forEach(f => {
+    const r = results[f.tie_id];
+
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    let html = `
+      <div class="fixture-header">
+        ${f.stage}: ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
+      </div>
+    `;
+
+    f.matches.forEach((pair, i) => {
+      const m = r && r.matches[i];
+
+      if (!m || !m.sets) {
+        html += `
+          <div class="result-row pending">
+            <div>M${i + 1}</div>
+            <div>${pair[0]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div>—</div>
+          </div>
+        `;
+        return;
+      }
+
+      let a = 0, b = 0;
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+      const w = a > b ? 0 : 1;
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+
+      html += `
+        <div class="result-row">
+          <div>M${i + 1}</div>
+          <div>${w === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>vs</div>
+          <div>${w === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${score}</div>
+        </div>
+      `;
+    });
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+}
+
+function showKnockoutFixtures() {
+  const c = document.getElementById("main-content");
+
+  c.innerHTML = `
+    <h2>🏆 Knockout Matches</h2>
+    <div id="knockout-grid" class="fixtures-grid"></div>
+  `;
+
+  renderKnockoutMatches();
+}
