@@ -1931,3 +1931,50 @@ body.dark a {
   body.dark .player-profile .summary {
   font-weight: 500;
 }
+
+.bracket {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.round {
+  flex: 1;
+  text-align: center;
+}
+
+.round h3 {
+  margin-bottom: 16px;
+  color: #9aa0a6;
+}
+
+.match {
+  background: #0b1220;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.match div {
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+
+.match div:last-child {
+  border-bottom: none;
+}
+
+.match.final {
+  background: #1a73e8;
+  color: white;
+}
+
+.champion {
+  background: gold;
+  color: black;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 16px;
+}
