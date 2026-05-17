@@ -2171,3 +2171,53 @@ function showTeamStandings() {
   html += `</div>`;
   c.innerHTML = html;
 }
+
+function showKnockoutBracket() {
+  const c = document.getElementById("main-content");
+
+  const sf1 = knockoutStage.semifinals[0];
+  const sf2 = knockoutStage.semifinals[1];
+
+  const finalA = knockoutStage.final.teamA || "Winner SF1";
+  const finalB = knockoutStage.final.teamB || "Winner SF2";
+
+  const champion = knockoutStage.final.winner || "🏆 Champion";
+
+  c.innerHTML = `
+    <h2>🏆 Knockout Stage</h2>
+
+    <div class="bracket">
+
+      <div class="round">
+        <h3>Semifinals</h3>
+
+        <div class="match">
+          <div onclick="openKnockoutMatch('SF1')">${sf1.teamA}</div>
+          <div onclick="openKnockoutMatch('SF1')">${sf1.teamB}</div>
+        </div>
+
+        <div class="match">
+          <div onclick="openKnockoutMatch('SF2')">${sf2.teamA}</div>
+          <div onclick="openKnockoutMatch('SF2')">${sf2.teamB}</div>
+        </div>
+
+      </div>
+
+      <div class="round">
+        <h3>Final</h3>
+
+        <div class="match final">
+          <div>${finalA}</div>
+          <div>${finalB}</div>
+        </div>
+
+      </div>
+
+      <div class="round">
+        <h3>Champion</h3>
+        <div class="champion">${champion}</div>
+      </div>
+
+    </div>
+  `;
+}
