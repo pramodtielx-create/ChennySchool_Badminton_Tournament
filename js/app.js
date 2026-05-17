@@ -3,6 +3,29 @@ let lastPlayerProfileSource = "standings"; // default
 let previousTeamRanks = {};
 let teamSortKey = "leaguePoints";
 let teamSortAsc = false;
+/* ================= KNOCKOUT DATA ================= */
+
+const knockoutStage = {
+  semifinals: [
+    {
+      id: "SF1",
+      teamA: "Quantum Force",
+      teamB: "Net Ninjas",
+      winner: null
+    },
+    {
+      id: "SF2",
+      teamA: "Smash Titans",
+      teamB: "Racket Scientists",
+      winner: null
+    }
+  ],
+  final: {
+    teamA: null,
+    teamB: null,
+    winner: null
+  }
+};
 const PLAYER_PHOTOS = {
   // ✅ Quantum Force
   "Rajendra": "assets/players/Rajendra.png",
