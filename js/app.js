@@ -2221,3 +2221,12 @@ function showKnockoutBracket() {
     </div>
   `;
 }
+
+function openKnockoutMatch(id) {
+  if (id === "SF1") {
+    renderMatchCard("Quantum Force", "Net Ninjas");
+  }
+  if (id === "SF2") {
+    renderMatchCard("Smash Titans", "Racket Scientists");
+  }
+}
