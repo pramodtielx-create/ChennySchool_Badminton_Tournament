@@ -95,9 +95,13 @@ let dataCache = null
 
 
 /*===============================renderfixtures()=====================================*/
-/*function renderFixtures() {
+
+
+function renderFixtures() {
+
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
+
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
@@ -105,91 +109,117 @@ let dataCache = null
 
   const showR1 = document.getElementById("r1").checked;
   const showR2 = document.getElementById("r2").checked;
+  const showSF = document.getElementById("sf").checked;
+  const showFinal = document.getElementById("final").checked;
   const showCompleted = document.getElementById("completed").checked;
   const showPending = document.getElementById("pending").checked;
 
-  let completedTotal = 0;
-  fixtures.forEach(f => {
-    const r = results[f.tie_id];
-    if (r) r.matches.forEach(m => m.sets && completedTotal++);
-  });
-
-  summary.innerHTML = `
-    <div class="summary">
-      📊 <strong>Fixtures Summary:</strong>
-      ${completedTotal} / ${fixtures.length * 3} matches completed
-    </div>
-  `;
+  let totalCompleted = 0;
+  let totalPending = 0;
 
   fixtures.forEach(f => {
-    if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
-
     const r = results[f.tie_id];
-
-    // ✅ COUNT MATCH STATES
-    let pendingCount = 0;
-    let completedCount = 0;
-
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
-      if (!m || !m.sets) pendingCount++;
-      else completedCount++;
+      if (!m || !m.sets) totalPending++;
+      else totalCompleted++;
     });
+  });
 
-    // ✅ FIXTURE‑LEVEL FILTER (THIS IS THE KEY)
-    if (showPending && !showCompleted && completedCount > 0) return;
-    if (showCompleted && !showPending && pendingCount > 0) return;
+  fixtures.forEach(f => {
+
+    const stage = (f.stage || "").toLowerCase();
+
+    if (
+      (f.round_no === 1 && !showR1) ||
+      (f.round_no === 2 && !showR2) ||
+      (stage.includes("semi") && !showSF) ||
+      (stage.includes("final") && !showFinal)
+    ) return;
+
+    const r = results[f.tie_id];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
 
     let html = `
       <div class="fixture-header">
+        ${f.stage ? "🔥 " + f.stage + ": " : ""}
         ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
       </div>
     `;
 
+    let visible = 0;
+
     f.matches.forEach((pair, i) => {
+
       const m = r && r.matches[i];
 
-      // ✅ PENDING MATCH
       if (!m || !m.sets) {
         if (!showPending) return;
 
+        visible++;
+
         html += `
-          <div class="match pending">
-            M${i + 1} ⏳
+          <div class="result-row pending">
+            <div>M${i+1}</div>
             <div>${pair[0]}</div>
-            <div>vs ${pair[1]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div>—</div>
           </div>
         `;
         return;
       }
 
-      // ✅ COMPLETED MATCH
       if (!showCompleted) return;
 
-      let a = 0, b = 0;
-      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
-      const w = a > b ? 0 : 1;
-      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+      let a=0,b=0;
+      m.sets.forEach(s=>s[0]>s[1]?a++:b++);
+
+      const w = a>b?0:1;
+      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
+
+      visible++;
 
       html += `
-        <div class="match done">
-          M${i + 1} 🏆
-          <div>${pair[w]}</div>
-          <div>vs ${pair[w ? 0 : 1]}</div>
-          <div class="result-score">${score}</div>
+        <div class="result-row">
+          <div>M${i+1}</div>
+          <div>${w===0?"🏆 ":""}${pair[0]}</div>
+          <div>vs</div>
+          <div>${w===1?"🏆 ":""}${pair[1]}</div>
+          <div>${score}</div>
         </div>
       `;
     });
 
-    card.innerHTML = html;
-    grid.appendChild(card);
+    if (visible > 0) {
+      card.innerHTML = html;
+      grid.appendChild(card);
+    }
   });
-}*/
 
+  let summaryText = "";
 
+  if (showPending && !showCompleted) {
+    summaryText = `⏳ Pending: ${totalPending}`;
+  } else if (showCompleted && !showPending) {
+    summaryText = `✅ Completed: ${totalCompleted}`;
+  } else {
+    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending}`;
+  }
+
+  summary.innerHTML = `<div class="summary">${summaryText}</div>`;
+}
+/*
 
 function renderFixtures() {
   const grid = document.getElementById("fixtures-grid");
@@ -205,7 +235,7 @@ function renderFixtures() {
   const showCompleted = document.getElementById("completed").checked;
   const showPending = document.getElementById("pending").checked;
 
-  /* ================= GLOBAL SUMMARY (ENTIRE TOURNAMENT) ================= */
+
   let totalCompleted = 0;
   let totalPending = 0;
 
@@ -218,7 +248,7 @@ function renderFixtures() {
     });
   });
 
-  /* ================= FIXTURES ================= */
+
   fixtures.forEach(f => {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
@@ -247,7 +277,7 @@ function renderFixtures() {
     f.matches.forEach((pair, i) => {
       const m = r && r.matches[i];
 
-      /* ================= PENDING MATCH ================= */
+    
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -265,7 +295,7 @@ function renderFixtures() {
         return;
       }
 
-      /* ================= COMPLETED MATCH ================= */
+   
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -294,7 +324,7 @@ function renderFixtures() {
     }
   });
 
-  /* ================= SUMMARY RENDER ================= */
+
   let summaryText = "";
 
   if (showPending && !showCompleted) {
@@ -311,9 +341,9 @@ function renderFixtures() {
     </div>
   `;
 }
-
+*/
 /**************************showresult*********************/
-function showResults() {
+/*function showResults() {
   const c = document.getElementById("main-content");
 
   c.innerHTML = `
@@ -333,10 +363,36 @@ function showResults() {
   });
 
   renderResults();
+}*/
+function showResults() {
+
+  const c = document.getElementById("main-content");
+
+  c.innerHTML = `
+    <div class="filters">
+      <label><input type="checkbox" id="res-r1" checked> Round 1</label>
+      <label><input type="checkbox" id="res-r2" checked> Round 2</label>
+      <label><input type="checkbox" id="res-sf" checked> Semifinal</label>
+      <label><input type="checkbox" id="res-final" checked> Final</label>
+      <label><input type="checkbox" id="res-completed" checked> Completed</label>
+      <label><input type="checkbox" id="res-pending" checked> Pending</label>
+    </div>
+
+    <h2>Results</h2>
+    <div id="summary"></div>
+    <div id="results-grid" class="fixtures-grid"></div>
+  `;
+
+  ["res-r1","res-r2","res-sf","res-final","res-completed","res-pending"]
+    .forEach(id => {
+      document.getElementById(id).onchange = renderResults;
+    });
+
+  renderResults();
 }
 /* =================render RESULTS ================= */
 
-function renderResults() {
+/*function renderResults() {
   const grid = document.getElementById("results-grid");
   grid.innerHTML = "";
 
@@ -346,10 +402,10 @@ function renderResults() {
   const showR1 = document.getElementById("res-r1").checked;
   const showR2 = document.getElementById("res-r2").checked;
   const showCompleted = document.getElementById("res-completed").checked;
-  const showPending = document.getElementById("res-pending").checked;
+  const showPending = document.getElementById("res-pending").checked;*/
 
   /* ================= GLOBAL SUMMARY (ENTIRE TOURNAMENT) ================= */
-  let totalCompleted = 0;
+ /* let totalCompleted = 0;
   let totalPending = 0;
 
   fixtures.forEach(f => {
@@ -361,8 +417,8 @@ function renderResults() {
     });
   });
 
-  /* ================= RESULTS GRID ================= */
-  fixtures.forEach(f => {
+   ================= RESULTS GRID ================= */
+  /*fixtures.forEach(f => {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
@@ -389,7 +445,7 @@ function renderResults() {
     f.matches.forEach((pair, i) => {
       const m = r && r.matches[i];
 
-      /* ================= PENDING ================= */
+       ================= PENDING ================= 
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -407,7 +463,7 @@ function renderResults() {
         return;
       }
 
-      /* ================= COMPLETED ================= */
+       ================= COMPLETED ================= 
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -436,7 +492,7 @@ function renderResults() {
     }
   });
 
-  /* ================= SUMMARY ================= */
+   ================= SUMMARY ================= 
   const summary = document.getElementById("summary");
   let summaryText = "";
 
@@ -455,6 +511,130 @@ function renderResults() {
   `;
 }
 
+*/
+
+function renderResults() {
+
+  const grid = document.getElementById("results-grid");
+  const summary = document.getElementById("summary");
+
+  grid.innerHTML = "";
+
+  const fixtures = dataCache.fixtures;
+  const results = dataCache.results || {};
+
+  const showR1 = document.getElementById("res-r1").checked;
+  const showR2 = document.getElementById("res-r2").checked;
+  const showSF = document.getElementById("res-sf").checked;
+  const showFinal = document.getElementById("res-final").checked;
+  const showCompleted = document.getElementById("res-completed").checked;
+  const showPending = document.getElementById("res-pending").checked;
+
+  let totalCompleted = 0;
+  let totalPending = 0;
+
+  fixtures.forEach(f => {
+    const r = results[f.tie_id];
+    f.matches.forEach((_, i) => {
+      const m = r && r.matches[i];
+      if (!m || !m.sets) totalPending++;
+      else totalCompleted++;
+    });
+  });
+
+  fixtures.forEach(f => {
+
+    const stage = (f.stage || "").toLowerCase();
+
+    if (
+      (f.round_no === 1 && !showR1) ||
+      (f.round_no === 2 && !showR2) ||
+      (stage.includes("semi") && !showSF) ||
+      (stage.includes("final") && !showFinal)
+    ) return;
+
+    const r = results[f.tie_id];
+
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    let html = `
+      <div class="fixture-header">
+        ${f.stage ? "🔥 " + f.stage + ": " : ""}
+        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
+      </div>
+    `;
+
+    let visible = 0;
+
+    f.matches.forEach((pair, i) => {
+
+      const m = r && r.matches[i];
+
+      if (!m || !m.sets) {
+        if (!showPending) return;
+
+        visible++;
+
+        html += `
+          <div class="result-row pending">
+            <div>M${i+1}</div>
+            <div>${pair[0]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div>—</div>
+          </div>
+        `;
+        return;
+      }
+
+      if (!showCompleted) return;
+
+      let a=0,b=0;
+      m.sets.forEach(s=>s[0]>s[1]?a++:b++);
+
+      const w = a>b?0:1;
+      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
+
+      visible++;
+
+      html += `
+        <div class="result-row">
+          <div>M${i+1}</div>
+          <div>${w===0?"🏆 ":""}${pair[0]}</div>
+          <div>vs</div>
+          <div>${w===1?"🏆 ":""}${pair[1]}</div>
+          <div>${score}</div>
+        </div>
+      `;
+    });
+
+    if (visible > 0) {
+      card.innerHTML = html;
+      grid.appendChild(card);
+    }
+  });
+
+  let summaryText = "";
+
+  if (showPending && !showCompleted) {
+    summaryText = `⏳ Pending: ${totalPending}`;
+  } else if (showCompleted && !showPending) {
+    summaryText = `✅ Completed: ${totalCompleted}`;
+  } else {
+    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending}`;
+  }
+
+  summary.innerHTML = `<div class="summary">${summaryText}</div>`;
+}
 
 /* ================= TEAM ================= */
 
