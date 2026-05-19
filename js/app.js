@@ -349,7 +349,9 @@ function renderResults() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    
+    const r = getResult(results, f.tie_id);
+
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -794,6 +796,8 @@ function renderTeamMatches() {
 
   const fixtures = dataCache.fixtures;
   const results = dataCache.results || {};
+  const results = getResult(results, f.tie_id);
+
 
   // ===== GLOBAL SUMMARY =====
   let totalCompleted = 0;
