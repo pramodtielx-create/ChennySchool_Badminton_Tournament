@@ -745,15 +745,18 @@ function showFixtures() {
   const c = document.getElementById("main-content");
 
   c.innerHTML = `
-    <div class="filters">
-      <label><input type="checkbox" id="r1" checked> Round 1</label>
-      <label><input type="checkbox" id="r2" checked> Round 2</label>
-      <label><input type="checkbox" id="completed" checked> Completed</label>
-      <label><input type="checkbox" id="pending" checked> Pending</label>
-    </div>
+  c.innerHTML = `
+  <div class="filters">
+    <label><input type="checkbox" id="r1" checked> Round 1</label>
+    <label><input type="checkbox" id="r2" checked> Round 2</label>
+    <label><input type="checkbox" id="sf" checked> Semifinal</label>
+    <label><input type="checkbox" id="final" checked> Final</label>
+    <label><input type="checkbox" id="completed" checked> Completed</label>
+    <label><input type="checkbox" id="pending" checked> Pending</label>
+  </div>
 
-    <div id="summary"></div>
-    <div id="fixtures-grid" class="fixtures-grid"></div>
+  <div id="summary"></div>
+  <div id="fixtures-grid" class="fixtures-grid"></div>
   `;
 
   ["r1", "r2", "completed", "pending"].forEach(id => {
