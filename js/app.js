@@ -310,12 +310,13 @@ function renderFixtures() {
       `;
     });
 
-    // ✅ Show tie ONLY if at least one match is visible
-    if (visibleMatchCount > 0) {
-      card.innerHTML = html;
-      grid.appendChild(card);
-    }
-  });
+
+  // ✅ Always show fixture if ANY match exists
+if (f.matches.length > 0) {
+  card.innerHTML = html;
+  grid.appendChild(card);
+}
+  );
 
   /* ================= SUMMARY RENDER ================= */
   let summaryText = "";
