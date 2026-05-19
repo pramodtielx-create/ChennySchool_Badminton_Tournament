@@ -13,7 +13,7 @@ const knockoutStage = {
       teamB: "Net Ninjas",
       winner: null
     },
-    {render
+    {
       id: "SF2",
       teamA: "Smash Titans",
       teamB: "Racket Scientists",
