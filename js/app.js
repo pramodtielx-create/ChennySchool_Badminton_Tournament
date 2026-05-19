@@ -212,15 +212,14 @@ let dataCache = null
   });
 }*/
 
-
-
 function renderFixtures() {
+
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
 
   grid.innerHTML = "";
 
-  const fixtures = dataCache.fixtures;
+  const fixtures = dataCache.fixtures || [];
   const results = dataCache.results || {};
 
   const showR1 = document.getElementById("r1").checked;
@@ -228,12 +227,30 @@ function renderFixtures() {
   const showCompleted = document.getElementById("completed").checked;
   const showPending = document.getElementById("pending").checked;
 
-  /* ================= GLOBAL SUMMARY ================= */
+  /* ✅ RESULT LOOKUP FIX (MAIN FIX) */
+  function getResult(tieId) {
+    let r = results[tieId];
+
+    if (!r) {
+      r = results[String(tieId)];
+    }
+
+    if (!r) {
+      const altKey = Object.keys(results).find(
+        k => Number(k) === Number(tieId)
+      );
+      if (altKey) r = results[altKey];
+    }
+
+    return r || null;
+  }
+
+  /* ✅ SUMMARY */
   let totalCompleted = 0;
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r = results[f.tie_id];
+    const r = getResult(f.tie_id);
 
     f.matches.forEach((_, i) => {
       const m = r && r.matches ? r.matches[i] : null;
@@ -243,13 +260,15 @@ function renderFixtures() {
     });
   });
 
-  /* ================= FIXTURES ================= */
+  /* ✅ RENDER ALL FIXTURES */
   fixtures.forEach(f => {
 
-    // ✅ Round filter
-    if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
+    // ✅ ROUND FILTER
+    if ((f.round_no === 1 && !showR1) ||
+        (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    const r = getResult(f.tie_id);
+
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -267,16 +286,12 @@ function renderFixtures() {
       </div>
     `;
 
-    let visibleMatchCount = 0;
-
     f.matches.forEach((pair, i) => {
       const m = r && r.matches ? r.matches[i] : null;
 
-      /* ✅ PENDING */
+      /* ✅ PENDING MATCH */
       if (!m || !m.sets) {
         if (!showPending) return;
-
-        visibleMatchCount++;
 
         html += `
           <div class="result-row pending">
@@ -290,37 +305,39 @@ function renderFixtures() {
         return;
       }
 
-      /* ✅ COMPLETED */
+      /* ✅ COMPLETED MATCH */
       if (!showCompleted) return;
 
       let a = 0, b = 0;
-      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+      m.sets.forEach(s => {
+        if (s[0] > s[1]) a++;
+        else b++;
+      });
 
-      const winnerSide = a > b ? 0 : 1;
-      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+      const winner = a > b ? 0 : 1;
 
-      visibleMatchCount++;
+      const score = m.sets
+        .map(s => `${s[0]}-${s[1]}`)
+        .join(" | ");
 
       html += `
         <div class="result-row">
           <div>M${i + 1}</div>
-          <div>${winnerSide === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
           <div>vs</div>
-          <div>${winnerSide === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
           <div>${score}</div>
         </div>
       `;
     });
 
-    /* ✅ ALWAYS SHOW FIXTURE (KEY FIX) */
-    if (f.matches.length > 0) {
-      card.innerHTML = html;
-      grid.appendChild(card);
-    }
+    /* ✅ ALWAYS APPEND (NO MORE DISAPPEARING FIXTURES) */
+    card.innerHTML = html;
+    grid.appendChild(card);
 
-  }); // ✅ PROPERLY CLOSED LOOP (IMPORTANT FIX)
+  });
 
-  /* ================= SUMMARY ================= */
+  /* ✅ SUMMARY UI */
   let summaryText = "";
 
   if (showPending && !showCompleted) {
