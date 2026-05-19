@@ -924,7 +924,7 @@ init();
 function showFixtures() {
   const c = document.getElementById("main-content");
 
-  c.innerHTML = `
+  
   c.innerHTML = `
   <div class="filters">
     <label><input type="checkbox" id="r1" checked> Round 1</label>
