@@ -795,7 +795,7 @@ function renderTeamMatches() {
   const showPending = document.getElementById("t-pending").checked;
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+/*  const results = dataCache.results || {};*/
   const results = getResult(results, f.tie_id);
 
 
