@@ -2490,9 +2490,7 @@ function renderKnockoutMatches() {
 
 function renderKnockoutMatches() {
 
-  // ✅ WAIT FOR DATA
   if (!dataCache || !dataCache.knockouts) {
-    console.warn("Waiting for knockout data...");
     setTimeout(renderKnockoutMatches, 300);
     return;
   }
@@ -2500,30 +2498,28 @@ function renderKnockoutMatches() {
   const grid = document.getElementById("knockout-grid");
   grid.innerHTML = "";
 
-  const knockouts = dataCache.knockouts || [];
+  const knockouts = dataCache.knockouts || {};
   const results = dataCache.results || {};
-
-  if (knockouts.length === 0) {
-    grid.innerHTML = "<p style='opacity:.7'>No knockout matches available</p>";
-    return;
-  }
 
   knockouts.forEach(f => {
 
-    // ✅ SAFE RESULT FETCH
-    let r = results[f.tie_id];
+    // ✅ NORMALIZE KEY
+    let key = String(f.tie_id)
+      .toUpperCase()
+      .replace(/\s+/g, "")
+      .trim();
 
-    // ✅ if result not present → treat as empty
-    if (!r) {
-      r = { matches: [{}, {}, {}] };
-    }
+    let r = results[key];
+
+    // ✅ fallback if no result
+    if (!r) r = { matches: [{}, {}, {}] };
 
     const card = document.createElement("div");
     card.className = "fixture-card";
 
     let html = `
       <div class="fixture-header">
-        🔥 ${f.stage}: ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+        🔥 ${f.stage}: ${f.team_a} vs ${f.team_b}
       </div>
 
       <div class="result-row header">
@@ -2537,9 +2533,8 @@ function renderKnockoutMatches() {
 
     f.matches.forEach((pair, i) => {
 
-      const m = r && r.matches ? r.matches[i] : null;
+      const m = r.matches[i];
 
-      /* ✅ PENDING (MOST IMPORTANT FIX) */
       if (!m || !m.sets) {
         html += `
           <div class="result-row pending">
@@ -2553,19 +2548,11 @@ function renderKnockoutMatches() {
         return;
       }
 
-      /* ✅ COMPLETED */
       let a = 0, b = 0;
-
-      m.sets.forEach(s => {
-        if (s[0] > s[1]) a++;
-        else b++;
-      });
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
 
       const winner = a > b ? 0 : 1;
-
-      const score = m.sets
-        .map(s => `${s[0]}-${s[1]}`)
-        .join(" | ");
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
       html += `
         <div class="result-row">
@@ -2578,13 +2565,7 @@ function renderKnockoutMatches() {
       `;
     });
 
-    // ✅ ALWAYS DISPLAY CARD
     card.innerHTML = html;
     grid.appendChild(card);
-
   });
-
-  console.log("✅ Knockouts rendered successfully");
 }
-
-
