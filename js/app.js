@@ -966,10 +966,11 @@ function showFixtures() {
   <div id="fixtures-grid" class="fixtures-grid"></div>
   `;
 
-  ["r1", "r2", "completed", "pending"].forEach(id => {
+  ["r1", "r2", "sf", "final", "completed", "pending"].forEach(id => {
+
     document.getElementById(id).onchange = renderFixtures;
   });
-
+   
   renderFixtures();
 }
 /*==================================renderfixes===============================*/
