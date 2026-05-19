@@ -13,7 +13,7 @@ const knockoutStage = {
       teamB: "Net Ninjas",
       winner: null
     },
-    {
+    {render
       id: "SF2",
       teamA: "Smash Titans",
       teamB: "Racket Scientists",
@@ -236,8 +236,8 @@ function renderFixtures() {
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures || [];
-  const results = dataCache.results || {};
-
+ 
+  const results = buildResultMap(dataCache.results || {});
   const showR1 = document.getElementById("r1").checked;
   const showR2 = document.getElementById("r2").checked;
   const showCompleted = document.getElementById("completed").checked;
