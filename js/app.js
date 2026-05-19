@@ -1007,6 +1007,42 @@ function showPlayerMatches(player) {
   });
 }
 
+function renderTeamView() {
+  const c = document.getElementById("main-content");
+
+  c.innerHTML = `
+    <div class="filters">
+      <label><input type="checkbox" id="t-r1" checked> Round 1</label>
+      <label><input type="checkbox" id="t-r2" checked> Round 2</label>
+      <label><input type="checkbox" id="t-sf" checked> Semifinal</label>
+      <label><input type="checkbox" id="t-final" checked> Final</label>
+      <label><input type="checkbox" id="t-completed" checked> Completed</label>
+      <label><input type="checkbox" id="t-pending" checked> Pending</label>
+    </div>
+
+    <h2>Team Match Tracker</h2>
+
+    <select id="teamSelect"></select>
+
+    <div id="summary"></div>
+    <div id="team-grid" class="fixtures-grid"></div>
+  `;
+
+  const teamSelect = document.getElementById("teamSelect");
+
+  [...new Set(dataCache.fixtures.flatMap(f => [f.team_a, f.team_b]))]
+    .forEach(t => teamSelect.innerHTML += `<option>${t}</option>`);
+
+  teamSelect.onchange = () => showTeamMatches(teamSelect.value);
+
+  ["t-r1","t-r2","t-sf","t-final","t-completed","t-pending"]
+    .forEach(id => {
+      document.getElementById(id).onchange = () =>
+        showTeamMatches(teamSelect.value);
+    });
+
+  showTeamMatches(teamSelect.value);
+}
 
 /* ================= EXPORT ================= */
 
@@ -1034,6 +1070,13 @@ init();
 
 /* ================= FIXTURES ================= */
 function showFixtures() {
+  
+  // ✅ PROTECT AGAINST EARLY CALL
+  if (!dataCache || !dataCache.fixtures) {
+    alert("Loading data... please wait");
+    return;
+  }
+
   const c = document.getElementById("main-content");
 
   
@@ -2325,42 +2368,6 @@ function showTeamStandings() {
 
   html += `</div>`;
   c.innerHTML = html;
-}
-function renderTeamView() {
-  const c = document.getElementById("main-content");
-
-  c.innerHTML = `
-    <div class="filters">
-      <label><input type="checkbox" id="t-r1" checked> Round 1</label>
-      <label><input type="checkbox" id="t-r2" checked> Round 2</label>
-      <label><input type="checkbox" id="t-sf" checked> Semifinal</label>
-      <label><input type="checkbox" id="t-final" checked> Final</label>
-      <label><input type="checkbox" id="t-completed" checked> Completed</label>
-      <label><input type="checkbox" id="t-pending" checked> Pending</label>
-    </div>
-
-    <h2>Team Match Tracker</h2>
-
-    <select id="teamSelect"></select>
-
-    <div id="summary"></div>
-    <div id="team-grid" class="fixtures-grid"></div>
-  `;
-
-  const teamSelect = document.getElementById("teamSelect");
-
-  [...new Set(dataCache.fixtures.flatMap(f => [f.team_a, f.team_b]))]
-    .forEach(t => teamSelect.innerHTML += `<option>${t}</option>`);
-
-  teamSelect.onchange = () => showTeamMatches(teamSelect.value);
-
-  ["t-r1","t-r2","t-sf","t-final","t-completed","t-pending"]
-    .forEach(id => {
-      document.getElementById(id).onchange = () =>
-        showTeamMatches(teamSelect.value);
-    });
-
-  showTeamMatches(teamSelect.value);
 }
 
 
