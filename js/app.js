@@ -750,6 +750,7 @@ window.showStandings = showStandings;
 window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
 window.showTeamStandings = showTeamStandings;
+window.showTeamSquads =showTeamSquads;
 
 
 
