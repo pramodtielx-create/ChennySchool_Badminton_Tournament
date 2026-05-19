@@ -129,7 +129,7 @@ function renderFixtures() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
 
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
@@ -150,7 +150,7 @@ function renderFixtures() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -255,7 +255,7 @@ function renderFixtures() {
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -268,7 +268,7 @@ function renderFixtures() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -424,7 +424,7 @@ function showResults() {
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -437,7 +437,7 @@ function showResults() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -560,7 +560,7 @@ function renderResults() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
 
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
@@ -580,7 +580,7 @@ function renderResults() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -779,7 +779,7 @@ function renderPlayerMatches() {
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     f.matches.forEach((pair, i) => {
       if (!pair.join(" ").includes(player)) return;
       const m = r && r.matches[i];
@@ -801,7 +801,7 @@ function renderPlayerMatches() {
   fixtures.forEach(f => {
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     let visibleCount = 0;
 
     const card = document.createElement("div");
@@ -1027,7 +1027,7 @@ function renderTeamMatches() {
 
   fixtures.forEach(f => {
     if (f.team_a !== team && f.team_b !== team) return;
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -1050,7 +1050,7 @@ function renderTeamMatches() {
     if (f.team_a !== team && f.team_b !== team) return;
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r = results[f.tie_id];
+    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
     let visibleCount = 0;
 
     const card = document.createElement("div");
