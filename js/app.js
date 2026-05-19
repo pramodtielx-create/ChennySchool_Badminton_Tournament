@@ -228,14 +228,16 @@ function renderFixtures() {
   const showCompleted = document.getElementById("completed").checked;
   const showPending = document.getElementById("pending").checked;
 
-  /* ================= GLOBAL SUMMARY (ENTIRE TOURNAMENT) ================= */
+  /* ================= GLOBAL SUMMARY ================= */
   let totalCompleted = 0;
   let totalPending = 0;
 
   fixtures.forEach(f => {
     const r = results[f.tie_id];
+
     f.matches.forEach((_, i) => {
-      const m = r && r.matches[i];
+      const m = r && r.matches ? r.matches[i] : null;
+
       if (!m || !m.sets) totalPending++;
       else totalCompleted++;
     });
@@ -243,11 +245,11 @@ function renderFixtures() {
 
   /* ================= FIXTURES ================= */
   fixtures.forEach(f => {
-    // Round filter
+
+    // ✅ Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
     const r = results[f.tie_id];
-
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -268,9 +270,9 @@ function renderFixtures() {
     let visibleMatchCount = 0;
 
     f.matches.forEach((pair, i) => {
-      const m = r && r.matches[i];
+      const m = r && r.matches ? r.matches[i] : null;
 
-      /* ================= PENDING MATCH ================= */
+      /* ✅ PENDING */
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -288,7 +290,7 @@ function renderFixtures() {
         return;
       }
 
-      /* ================= COMPLETED MATCH ================= */
+      /* ✅ COMPLETED */
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -310,15 +312,15 @@ function renderFixtures() {
       `;
     });
 
+    /* ✅ ALWAYS SHOW FIXTURE (KEY FIX) */
+    if (f.matches.length > 0) {
+      card.innerHTML = html;
+      grid.appendChild(card);
+    }
 
-  // ✅ Always show fixture if ANY match exists
-if (f.matches.length > 0) {
-  card.innerHTML = html;
-  grid.appendChild(card);
-}
-  
+  }); // ✅ PROPERLY CLOSED LOOP (IMPORTANT FIX)
 
-  /* ================= SUMMARY RENDER ================= */
+  /* ================= SUMMARY ================= */
   let summaryText = "";
 
   if (showPending && !showCompleted) {
@@ -335,6 +337,7 @@ if (f.matches.length > 0) {
     </div>
   `;
 }
+
 
 /**************************showresult*********************/
 function showResults() {
