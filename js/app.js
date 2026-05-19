@@ -213,167 +213,77 @@ let dataCache = null
 }*/
 /****========================================**************/
 
-function buildResultMap(resultsArray) {
+function buildResultMap(resultsObj) {
   const map = {};
+  if (!resultsObj) return map;
 
-  if (Array.isArray(resultsArray)) {
-    resultsArray.forEach(r => {
-      map[String(r.tie_id)] = r;
-    });
-  } else {
-    return resultsArray; // already correct
-  }
+  Object.keys(resultsObj).forEach(k => {
+    map[normalizeKey(k)] = resultsObj[k];
+  });
 
   return map;
 }
 
+
 /*********************=============================************/
 function renderFixtures() {
-  
-if (!dataCache || !dataCache.fixtures) {
-    console.warn("Data not ready yet");
-    return;
-  }
+
+  if (!dataCache || !dataCache.fixtures) return;
 
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
 
   grid.innerHTML = "";
 
-  const fixtures = dataCache.fixtures || [];
- 
-  const results = buildResultMap(dataCache.results || {});
-  const showR1 = document.getElementById("r1").checked;
-  const showR2 = document.getElementById("r2").checked;
-  const showCompleted = document.getElementById("completed").checked;
-  const showPending = document.getElementById("pending").checked;
-
-  /* ✅ RESULT LOOKUP FIX (MAIN FIX) */
-  function getResult(tieId) {
-    let r = results[tieId];
-
-    if (!r) {
-      r = results[String(tieId)];
-    }
-
-    if (!r) {
-      const altKey = Object.keys(results).find(
-        k => Number(k) === Number(tieId)
-      );
-      if (altKey) r = results[altKey];
-    }
-
-    return r || null;
-  }
-
-  /* ✅ SUMMARY */
-  let totalCompleted = 0;
-  let totalPending = 0;
+  const fixtures = dataCache.fixtures;
+  const results = buildResultMap(dataCache.results);
 
   fixtures.forEach(f => {
-    const r = getResult(f.tie_id);
 
-    f.matches.forEach((_, i) => {
-      const m = r && r.matches ? r.matches[i] : null;
-
-      if (!m || !m.sets) totalPending++;
-      else totalCompleted++;
-    });
-  });
-
-  /* ✅ RENDER ALL FIXTURES */
-  fixtures.forEach(f => {
-
-    // ✅ ROUND FILTER
-    if ((f.round_no === 1 && !showR1) ||
-        (f.round_no === 2 && !showR2)) return;
-
-    const r = getResult(f.tie_id);
+    const r = results[normalizeKey(f.tie_id)] || { matches: [{}, {}, {}] };
 
     const card = document.createElement("div");
     card.className = "fixture-card";
 
     let html = `
       <div class="fixture-header">
-        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
-      </div>
-
-      <div class="result-row header">
-        <div>M</div>
-        <div>${f.team_a}</div>
-        <div>VS</div>
-        <div>${f.team_b}</div>
-        <div>Score</div>
+        ${f.team_a} vs ${f.team_b}
       </div>
     `;
 
     f.matches.forEach((pair, i) => {
-      const m = r && r.matches ? r.matches[i] : null;
 
-      /* ✅ PENDING MATCH */
+      const m = r.matches[i];
+
       if (!m || !m.sets) {
-        if (!showPending) return;
-
         html += `
           <div class="result-row pending">
-            <div>M${i + 1}</div>
-            <div>${pair[0]}</div>
-            <div>vs</div>
-            <div>${pair[1]}</div>
-            <div>—</div>
+            M${i+1} ${pair[0]} vs ${pair[1]} — Pending
           </div>
         `;
         return;
       }
 
-      /* ✅ COMPLETED MATCH */
-      if (!showCompleted) return;
-
       let a = 0, b = 0;
-      m.sets.forEach(s => {
-        if (s[0] > s[1]) a++;
-        else b++;
-      });
+      m.sets.forEach(s => s[0]>s[1]?a++:b++);
 
-      const winner = a > b ? 0 : 1;
-
-      const score = m.sets
-        .map(s => `${s[0]}-${s[1]}`)
-        .join(" | ");
+      const winner = a>b?0:1;
+      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
 
       html += `
         <div class="result-row">
-          <div>M${i + 1}</div>
-          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
-          <div>vs</div>
-          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
-          <div>${score}</div>
+          M${i+1}
+          ${winner===0?"🏆":""} ${pair[0]}
+          vs
+          ${winner===1?"🏆":""} ${pair[1]}
+          ${score}
         </div>
       `;
     });
 
-    /* ✅ ALWAYS APPEND (NO MORE DISAPPEARING FIXTURES) */
     card.innerHTML = html;
     grid.appendChild(card);
-
   });
-
-  /* ✅ SUMMARY UI */
-  let summaryText = "";
-
-  if (showPending && !showCompleted) {
-    summaryText = `⏳ Pending: ${totalPending} matches`;
-  } else if (showCompleted && !showPending) {
-    summaryText = `✅ Completed: ${totalCompleted} matches`;
-  } else {
-    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending} matches`;
-  }
-
-  summary.innerHTML = `
-    <div class="summary">
-      ${summaryText}
-    </div>
-  `;
 }
 
 
@@ -2373,10 +2283,7 @@ function openKnockoutMatch(id) {
 }*/
 function showKnockoutFixtures() {
 
-  if (!dataCache) {
-    alert("Data is still loading...");
-    return;
-  }
+
 
   const c = document.getElementById("main-content");
 
@@ -2386,6 +2293,7 @@ function showKnockoutFixtures() {
   `;
 
   renderKnockoutMatches();
+
 }
 /*
 
@@ -2484,9 +2392,9 @@ function renderKnockoutMatches() {
 
  
 }
-
-
 */
+
+
 
 function renderKnockoutMatches() {
 
@@ -2498,21 +2406,12 @@ function renderKnockoutMatches() {
   const grid = document.getElementById("knockout-grid");
   grid.innerHTML = "";
 
-  const knockouts = dataCache.knockouts || {};
-  const results = dataCache.results || {};
+  const knockouts = dataCache.knockouts;
+  const results = buildResultMap(dataCache.results);
 
   knockouts.forEach(f => {
 
-    // ✅ NORMALIZE KEY
-    let key = String(f.tie_id)
-      .toUpperCase()
-      .replace(/\s+/g, "")
-      .trim();
-
-    let r = results[key];
-
-    // ✅ fallback if no result
-    if (!r) r = { matches: [{}, {}, {}] };
+    const r = results[normalizeKey(f.tie_id)] || { matches: [{}, {}, {}] };
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -2523,11 +2422,7 @@ function renderKnockoutMatches() {
       </div>
 
       <div class="result-row header">
-        <div>M</div>
-        <div>${f.team_a}</div>
-        <div>VS</div>
-        <div>${f.team_b}</div>
-        <div>Score</div>
+        <div>M</div><div>${f.team_a}</div><div>VS</div><div>${f.team_b}</div><div>Score</div>
       </div>
     `;
 
@@ -2538,28 +2433,28 @@ function renderKnockoutMatches() {
       if (!m || !m.sets) {
         html += `
           <div class="result-row pending">
-            <div>M${i + 1}</div>
+            <div>M${i+1}</div>
             <div>${pair[0]}</div>
             <div>vs</div>
             <div>${pair[1]}</div>
-            <div style="color:orange;font-weight:bold">Pending</div>
+            <div style="color:orange">Pending</div>
           </div>
         `;
         return;
       }
 
-      let a = 0, b = 0;
-      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+      let a=0,b=0;
+      m.sets.forEach(s=>s[0]>s[1]?a++:b++);
 
-      const winner = a > b ? 0 : 1;
-      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+      const winner = a>b?0:1;
+      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
 
       html += `
         <div class="result-row">
-          <div>M${i + 1}</div>
-          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>M${i+1}</div>
+          <div>${winner===0?"🏆 ":""}${pair[0]}</div>
           <div>vs</div>
-          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${winner===1?"🏆 ":""}${pair[1]}</div>
           <div>${score}</div>
         </div>
       `;
