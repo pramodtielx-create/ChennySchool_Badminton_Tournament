@@ -1,39 +1,8 @@
-function normalizeKey(val) {
-  return String(val)
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .trim();
-}
-
-
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
 let lastPlayerProfileSource = "standings"; // default
 let previousTeamRanks = {};
 let teamSortKey = "leaguePoints";
 let teamSortAsc = false;
-/* ================= KNOCKOUT DATA ================= */
-
-const knockoutStage = {
-  semifinals: [
-    {
-      id: "SF1",
-      teamA: "Quantum Force",
-      teamB: "Net Ninjas",
-      winner: null
-    },
-    {
-      id: "SF2",
-      teamA: "Smash Titans",
-      teamB: "Racket Scientists",
-      winner: null
-    }
-  ],
-  final: {
-    teamA: null,
-    teamB: null,
-    winner: null
-  }
-};
 const PLAYER_PHOTOS = {
   // ✅ Quantum Force
   "Rajendra": "assets/players/Rajendra.png",
@@ -219,81 +188,129 @@ let dataCache = null
     grid.appendChild(card);
   });
 }*/
-/****========================================**************/
-
-function buildResultMap(resultsObj) {
-  const map = {};
-  if (!resultsObj) return map;
-
-  Object.keys(resultsObj).forEach(k => {
-    map[normalizeKey(k)] = resultsObj[k];
-  });
-
-  return map;
-}
 
 
-/*********************=============================************/
+
 function renderFixtures() {
-
-  if (!dataCache || !dataCache.fixtures) return;
-
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
 
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = buildResultMap(dataCache.results);
+  const results = dataCache.results || {};
+
+  const showR1 = document.getElementById("r1").checked;
+  const showR2 = document.getElementById("r2").checked;
+  const showCompleted = document.getElementById("completed").checked;
+  const showPending = document.getElementById("pending").checked;
+
+  /* ================= GLOBAL SUMMARY (ENTIRE TOURNAMENT) ================= */
+  let totalCompleted = 0;
+  let totalPending = 0;
 
   fixtures.forEach(f => {
+    const r = results[f.tie_id];
+    f.matches.forEach((_, i) => {
+      const m = r && r.matches[i];
+      if (!m || !m.sets) totalPending++;
+      else totalCompleted++;
+    });
+  });
 
-    const r = results[normalizeKey(f.tie_id)] || { matches: [{}, {}, {}] };
+  /* ================= FIXTURES ================= */
+  fixtures.forEach(f => {
+    // Round filter
+    if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
+
+    const r = results[f.tie_id];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
 
     let html = `
       <div class="fixture-header">
-        ${f.team_a} vs ${f.team_b}
+        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
       </div>
     `;
 
+    let visibleMatchCount = 0;
+
     f.matches.forEach((pair, i) => {
+      const m = r && r.matches[i];
 
-      const m = r.matches[i];
-
+      /* ================= PENDING MATCH ================= */
       if (!m || !m.sets) {
+        if (!showPending) return;
+
+        visibleMatchCount++;
+
         html += `
           <div class="result-row pending">
-            M${i+1} ${pair[0]} vs ${pair[1]} — Pending
+            <div>M${i + 1}</div>
+            <div>${pair[0]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div>—</div>
           </div>
         `;
         return;
       }
 
-      let a = 0, b = 0;
-      m.sets.forEach(s => s[0]>s[1]?a++:b++);
+      /* ================= COMPLETED MATCH ================= */
+      if (!showCompleted) return;
 
-      const winner = a>b?0:1;
-      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
+      let a = 0, b = 0;
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+      const winnerSide = a > b ? 0 : 1;
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
+
+      visibleMatchCount++;
 
       html += `
         <div class="result-row">
-          M${i+1}
-          ${winner===0?"🏆":""} ${pair[0]}
-          vs
-          ${winner===1?"🏆":""} ${pair[1]}
-          ${score}
+          <div>M${i + 1}</div>
+          <div>${winnerSide === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>vs</div>
+          <div>${winnerSide === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${score}</div>
         </div>
       `;
     });
 
-    card.innerHTML = html;
-    grid.appendChild(card);
+    // ✅ Show tie ONLY if at least one match is visible
+    if (visibleMatchCount > 0) {
+      card.innerHTML = html;
+      grid.appendChild(card);
+    }
   });
-}
 
+  /* ================= SUMMARY RENDER ================= */
+  let summaryText = "";
+
+  if (showPending && !showCompleted) {
+    summaryText = `⏳ Pending: ${totalPending} matches`;
+  } else if (showCompleted && !showPending) {
+    summaryText = `✅ Completed: ${totalCompleted} matches`;
+  } else {
+    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending} matches`;
+  }
+
+  summary.innerHTML = `
+    <div class="summary">
+      ${summaryText}
+    </div>
+  `;
+}
 
 /**************************showresult*********************/
 function showResults() {
@@ -349,9 +366,7 @@ function renderResults() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    
-    const r = getResult(results, f.tie_id);
-
+    const r = results[f.tie_id];
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -711,7 +726,6 @@ window.showStandings = showStandings;
 window.showPlayerStandings = showPlayerStandings;
 window.showPlayerProfile = showPlayerProfile;
 window.showTeamStandings = showTeamStandings;
-window.showTeamSquads =showTeamSquads;
 
 
 
@@ -795,9 +809,7 @@ function renderTeamMatches() {
   const showPending = document.getElementById("t-pending").checked;
 
   const fixtures = dataCache.fixtures;
-/*  const results = dataCache.results || {};*/
-  const results = getResult(results, f.tie_id);
-
+  const results = dataCache.results || {};
 
   // ===== GLOBAL SUMMARY =====
   let totalCompleted = 0;
@@ -2158,307 +2170,4 @@ function showTeamStandings() {
 
   html += `</div>`;
   c.innerHTML = html;
-}
-
-function showKnockoutBracket() {
-  const c = document.getElementById("main-content");
-
-  const sf1 = knockoutStage.semifinals[0];
-  const sf2 = knockoutStage.semifinals[1];
-
-  const finalA = knockoutStage.final.teamA || "Winner SF1";
-  const finalB = knockoutStage.final.teamB || "Winner SF2";
-
-  const champion = knockoutStage.final.winner || "🏆 Champion";
-
-  c.innerHTML = `
-    <h2>🏆 Knockout Stage</h2>
-
-    <div class="bracket">
-
-      <div class="round">
-        <h3>Semifinals</h3>
-
-        <div class="match">
-          <div onclick="openKnockoutMatch('SF1')">${sf1.teamA}</div>
-          <div onclick="openKnockoutMatch('SF1')">${sf1.teamB}</div>
-        </div>
-
-        <div class="match">
-          <div onclick="openKnockoutMatch('SF2')">${sf2.teamA}</div>
-          <div onclick="openKnockoutMatch('SF2')">${sf2.teamB}</div>
-        </div>
-
-      </div>
-
-      <div class="round">
-        <h3>Final</h3>
-
-        <div class="match final">
-          <div>${finalA}</div>
-          <div>${finalB}</div>
-        </div>
-
-      </div>
-
-      <div class="round">
-        <h3>Champion</h3>
-        <div class="champion">${champion}</div>
-      </div>
-
-    </div>
-  `;
-}
-
-function openKnockoutMatch(id) {
-  if (id === "SF1") {
-    renderMatchCard("Quantum Force", "Net Ninjas");
-  }
-  if (id === "SF2") {
-    renderMatchCard("Smash Titans", "Racket Scientists");
-  }
-}
-/*function renderKnockoutMatches() {
-
-  if (!dataCache) {
-    alert("Data is still loading. Please wait...");
-    return;
-  }
-
-  const grid = document.getElementById("knockout-grid");
-  grid.innerHTML = "";
-
-  const knockouts = dataCache.knockouts || [];
-  const results = dataCache.results || {};
-
-  if (knockouts.length === 0) {
-    grid.innerHTML = "<p style='opacity:.7'>No knockout data available</p>";
-    return;
-  }
-
-  knockouts.forEach(f => {
-    const r = results[f.tie_id];
-
-    const card = document.createElement("div");
-    card.className = "fixture-card";
-
-    let html = `
-      <div class="fixture-header">
-        ${f.stage}: ${f.team_a} <span class="vs">vs</span> ${f.team_b}
-      </div>
-
-      <div class="result-row header">
-        <div>M</div>
-        <div>${f.team_a}</div>
-        <div>VS</div>
-        <div>${f.team_b}</div>
-        <div>Score</div>
-      </div>
-    `;
-
-    f.matches.forEach((pair, i) => {
-      const m = r && r.matches[i];
-
-      if (!m || !m.sets) {
-        html += `
-          <div class="result-row pending">
-            <div>M${i + 1}</div>
-            <div>${pair[0]}</div>
-            <div>vs</div>
-            <div>${pair[1]}</div>
-            <div>—</div>
-          </div>
-        `;
-        return;
-      }
-
-      let a = 0, b = 0;
-      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
-
-      const winner = a > b ? 0 : 1;
-      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
-
-      html += `
-        <div class="result-row">
-          <div>M${i + 1}</div>
-          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
-          <div>vs</div>
-          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
-          <div>${score}</div>
-        </div>
-      `;
-    });
-
-    card.innerHTML = html;
-    grid.appendChild(card);
-  });
-}*/
-function showKnockoutFixtures() {
-
-
-
-  const c = document.getElementById("main-content");
-
-  c.innerHTML = `
-    <h2>🏆 Knockout Matches</h2>
-    <div id="knockout-grid" class="fixtures-grid"></div>
-  `;
-
-  renderKnockoutMatches();
-
-}
-/*
-
-function renderKnockoutMatches() {
-
-  if (!dataCache) {
-    alert("Data is still loading. Please wait...");
-    return;
-  }
-
-  const grid = document.getElementById("knockout-grid");
-  grid.innerHTML = "";
-
-  const knockouts = dataCache.knockouts || [];
-  const results = dataCache.results || {};
-
-  if (!knockouts || knockouts.length === 0) {
-    grid.innerHTML = "<p style='opacity:.7'>No knockout data available</p>";
-    return;
-  }
-
-  knockouts.forEach(f => {
-
-  
-    let r = results[f.tie_id];
-
-    if (!r) {
-      if (f.tie_id === "SF1") r = results["SF1"];
-      else if (f.tie_id === "SF2") r = results["SF2"];
-    }
-
-    const card = document.createElement("div");
-    card.className = "fixture-card";
-
-    let html = `
-      <div class="fixture-header">
-        ${f.stage}: ${f.team_a} <span class="vs">vs</span> ${f.team_b}
-      </div>
-
-      <div class="result-row header">
-        <div>M</div>
-        <div>${f.team_a}</div>
-        <div>VS</div>
-        <div>${f.team_b}</div>
-        <div>Score</div>
-      </div>
-    `;
-
-    f.matches.forEach((pair, i) => {
-
-      const m = r && r.matches ? r.matches[i] : null;
-
-   
-      if (!m || !m.sets) {
-        html += `
-          <div class="result-row pending">
-            <div>M${i + 1}</div>
-            <div>${pair[0]}</div>
-            <div>vs</div>
-            <div>${pair[1]}</div>
-            <div>—</div>
-          </div>
-        `;
-        return;
-      }
-
-   
-      let a = 0, b = 0;
-
-      m.sets.forEach(s => {
-        if (s[0] > s[1]) a++;
-        else b++;
-      });
-
-      const winner = a > b ? 0 : 1;
-
-      const score = m.sets
-        .map(s => `${s[0]}-${s[1]}`)
-        .join(" | ");
-
-      html += `
-        <div class="result-row">
-          <div>M${i + 1}</div>
-          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
-          <div>vs</div>
-          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
-          <div>${score}</div>
-        </div>
-      `;
-    });
-
-    card.innerHTML = html;
-    grid.appendChild(card);
-  });
-
-
- 
-}
-*/
-
-function renderKnockoutMatches() {
-
-  const grid = document.getElementById("knockout-grid");
-
-  // ✅ SAFETY CHECK
-  if (!grid) {
-    console.warn("Knockout grid not ready");
-    setTimeout(renderKnockoutMatches, 200);
-    return;
-  }
-
-  if (!dataCache || !dataCache.knockouts) {
-    setTimeout(renderKnockoutMatches, 200);
-    return;
-  }
-
-  grid.innerHTML = "";
-
-  const knockouts = dataCache.knockouts;
-  const results = buildResultMap(dataCache.results);
-
-  knockouts.forEach(f => {
-
-    const r = results[normalizeKey(f.tie_id)] || { matches: [{}, {}, {}] };
-
-    const card = document.createElement("div");
-    card.className = "fixture-card";
-
-    let html = `
-      <div class="fixture-header">
-        🔥 ${f.stage}: ${f.team_a} vs ${f.team_b}
-      </div>
-    `;
-
-    f.matches.forEach((pair, i) => {
-
-      const m = r.matches[i];
-
-      if (!m || !m.sets) {
-        html += `<div> M${i+1} ${pair[0]} vs ${pair[1]} — Pending </div>`;
-        return;
-      }
-
-      let a=0,b=0;
-      m.sets.forEach(s => s[0]>s[1]?a++:b++);
-
-      const w = a>b?0:1;
-      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
-
-      html += `<div>🏆 ${pair[w]} vs ${pair[w?0:1]} (${score})</div>`;
-    });
-
-    card.innerHTML = html;
-    grid.appendChild(card);
-  });
 }
