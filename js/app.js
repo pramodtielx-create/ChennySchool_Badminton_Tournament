@@ -2374,7 +2374,7 @@ function openKnockoutMatch(id) {
 function showKnockoutFixtures() {
 
   if (!dataCache) {
-    alert("Data still loading. Try again in a second.");
+    alert("Data is still loading...");
     return;
   }
 
@@ -2387,7 +2387,7 @@ function showKnockoutFixtures() {
 
   renderKnockoutMatches();
 }
-
+/*
 
 function renderKnockoutMatches() {
 
@@ -2409,7 +2409,7 @@ function renderKnockoutMatches() {
 
   knockouts.forEach(f => {
 
-    /* ✅ SAFE RESULT LOOKUP (HANDLES SF1 / SF2 MAPPING) */
+  
     let r = results[f.tie_id];
 
     if (!r) {
@@ -2438,7 +2438,7 @@ function renderKnockoutMatches() {
 
       const m = r && r.matches ? r.matches[i] : null;
 
-      /* ✅ PENDING MATCH */
+   
       if (!m || !m.sets) {
         html += `
           <div class="result-row pending">
@@ -2452,7 +2452,7 @@ function renderKnockoutMatches() {
         return;
       }
 
-      /* ✅ COMPLETED MATCH */
+   
       let a = 0, b = 0;
 
       m.sets.forEach(s => {
@@ -2481,6 +2481,110 @@ function renderKnockoutMatches() {
     grid.appendChild(card);
   });
 
-  /* ✅ OPTIONAL DEBUG */
-  console.log("✅ Knockout rendered:", knockouts);
+
+ 
 }
+
+
+*/
+
+function renderKnockoutMatches() {
+
+  // ✅ WAIT FOR DATA
+  if (!dataCache || !dataCache.knockouts) {
+    console.warn("Waiting for knockout data...");
+    setTimeout(renderKnockoutMatches, 300);
+    return;
+  }
+
+  const grid = document.getElementById("knockout-grid");
+  grid.innerHTML = "";
+
+  const knockouts = dataCache.knockouts || [];
+  const results = dataCache.results || {};
+
+  if (knockouts.length === 0) {
+    grid.innerHTML = "<p style='opacity:.7'>No knockout matches available</p>";
+    return;
+  }
+
+  knockouts.forEach(f => {
+
+    // ✅ SAFE RESULT FETCH
+    let r = results[f.tie_id];
+
+    // ✅ if result not present → treat as empty
+    if (!r) {
+      r = { matches: [{}, {}, {}] };
+    }
+
+    const card = document.createElement("div");
+    card.className = "fixture-card";
+
+    let html = `
+      <div class="fixture-header">
+        🔥 ${f.stage}: ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
+
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
+      </div>
+    `;
+
+    f.matches.forEach((pair, i) => {
+
+      const m = r && r.matches ? r.matches[i] : null;
+
+      /* ✅ PENDING (MOST IMPORTANT FIX) */
+      if (!m || !m.sets) {
+        html += `
+          <div class="result-row pending">
+            <div>M${i + 1}</div>
+            <div>${pair[0]}</div>
+            <div>vs</div>
+            <div>${pair[1]}</div>
+            <div style="color:orange;font-weight:bold">Pending</div>
+          </div>
+        `;
+        return;
+      }
+
+      /* ✅ COMPLETED */
+      let a = 0, b = 0;
+
+      m.sets.forEach(s => {
+        if (s[0] > s[1]) a++;
+        else b++;
+      });
+
+      const winner = a > b ? 0 : 1;
+
+      const score = m.sets
+        .map(s => `${s[0]}-${s[1]}`)
+        .join(" | ");
+
+      html += `
+        <div class="result-row">
+          <div>M${i + 1}</div>
+          <div>${winner === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>vs</div>
+          <div>${winner === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${score}</div>
+        </div>
+      `;
+    });
+
+    // ✅ ALWAYS DISPLAY CARD
+    card.innerHTML = html;
+    grid.appendChild(card);
+
+  });
+
+  console.log("✅ Knockouts rendered successfully");
+}
+
+
