@@ -117,8 +117,20 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
+  // ✅ FILTERED SUMMARY (FIXED)
   fixtures.forEach(f => {
+
+    const stage = (f.stage || "").toLowerCase();
+
+    if (
+      (f.round_no === 1 && !showR1) ||
+      (f.round_no === 2 && !showR2) ||
+      (stage.includes("semi") && !showSF) ||
+      (stage.includes("final") && !showFinal)
+    ) return;
+
     const r = results[f.tie_id];
+
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -126,6 +138,7 @@ function renderFixtures() {
     });
   });
 
+  // ✅ RENDER CARDS
   fixtures.forEach(f => {
 
     const stage = (f.stage || "").toLowerCase();
@@ -207,6 +220,7 @@ function renderFixtures() {
     }
   });
 
+  // ✅ SUMMARY OUTPUT
   let summaryText = "";
 
   if (showPending && !showCompleted) {
@@ -219,6 +233,7 @@ function renderFixtures() {
 
   summary.innerHTML = `<div class="summary">${summaryText}</div>`;
 }
+
 /*
 
 function renderFixtures() {
@@ -533,8 +548,20 @@ function renderResults() {
   let totalCompleted = 0;
   let totalPending = 0;
 
+  // ✅ FILTERED SUMMARY
   fixtures.forEach(f => {
+
+    const stage = (f.stage || "").toLowerCase();
+
+    if (
+      (f.round_no === 1 && !showR1) ||
+      (f.round_no === 2 && !showR2) ||
+      (stage.includes("semi") && !showSF) ||
+      (stage.includes("final") && !showFinal)
+    ) return;
+
     const r = results[f.tie_id];
+
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
