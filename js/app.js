@@ -1,4 +1,18 @@
 const API_URL ="https://script.google.com/macros/s/AKfycbzXJYSI5VwLndm8tzCwBqDGPjYNiWrMGdNH0eg9KNzCkCwFVG-l4yToSHTCQhYGe0qUmg/exec";
+function normalizeKey(val) {
+  return String(val).toUpperCase().replace(/\s+/g, "").trim();
+}
+function buildResultMap(resultsObj) {
+  const map = {};
+  if (!resultsObj) return map;
+
+  Object.keys(resultsObj).forEach(k => {
+    map[normalizeKey(k)] = resultsObj[k];
+  });
+
+  return map;
+}
+
 let lastPlayerProfileSource = "standings"; // default
 let previousTeamRanks = {};
 let teamSortKey = "leaguePoints";
@@ -94,7 +108,7 @@ let dataCache = null
 
 
 
-/*===============================renderfixtures()=====================================*/
+/*====================================================================*/
 
 
 function renderFixtures() {
@@ -105,7 +119,7 @@ function renderFixtures() {
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const showR1 = document.getElementById("r1").checked;
   const showR2 = document.getElementById("r2").checked;
@@ -129,7 +143,7 @@ function renderFixtures() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
 
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
@@ -150,7 +164,7 @@ function renderFixtures() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -243,7 +257,7 @@ function renderFixtures() {
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const showR1 = document.getElementById("r1").checked;
   const showR2 = document.getElementById("r2").checked;
@@ -255,7 +269,7 @@ function renderFixtures() {
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -268,7 +282,7 @@ function renderFixtures() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -412,7 +426,7 @@ function showResults() {
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const showR1 = document.getElementById("res-r1").checked;
   const showR2 = document.getElementById("res-r2").checked;
@@ -424,7 +438,7 @@ function showResults() {
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -437,7 +451,7 @@ function showResults() {
     // Round filter
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     const card = document.createElement("div");
     card.className = "fixture-card";
 
@@ -536,7 +550,7 @@ function renderResults() {
   grid.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const showR1 = document.getElementById("res-r1").checked;
   const showR2 = document.getElementById("res-r2").checked;
@@ -560,7 +574,7 @@ function renderResults() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
 
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
@@ -580,7 +594,7 @@ function renderResults() {
       (stage.includes("final") && !showFinal)
     ) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
 
     const card = document.createElement("div");
     card.className = "fixture-card";
@@ -773,13 +787,13 @@ function renderPlayerMatches() {
   const showPending = document.getElementById("p-pending").checked;
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   let totalCompleted = 0;
   let totalPending = 0;
 
   fixtures.forEach(f => {
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     f.matches.forEach((pair, i) => {
       if (!pair.join(" ").includes(player)) return;
       const m = r && r.matches[i];
@@ -801,7 +815,7 @@ function renderPlayerMatches() {
   fixtures.forEach(f => {
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     let visibleCount = 0;
 
     const card = document.createElement("div");
@@ -1020,7 +1034,7 @@ function renderTeamMatches() {
   const showPending = document.getElementById("t-pending").checked;
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   // ===== GLOBAL SUMMARY =====
   let totalCompleted = 0;
@@ -1028,7 +1042,7 @@ function renderTeamMatches() {
 
   fixtures.forEach(f => {
     if (f.team_a !== team && f.team_b !== team) return;
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -1051,7 +1065,7 @@ function renderTeamMatches() {
     if (f.team_a !== team && f.team_b !== team) return;
     if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
 
-    const r =   results[f.tie_id] ||   results[String(f.tie_id)] ||   results[String(f.tie_id).trim()];
+    const r = results[normalizeKey(f.tie_id)];
     let visibleCount = 0;
 
     const card = document.createElement("div");
@@ -1121,7 +1135,7 @@ function renderTeamMatches() {
 
 function computeTeamStandings() {
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const teams = {};
 
@@ -1341,7 +1355,7 @@ function showStandings() {
 /*
 function computePlayerStandings() {
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
 
   const players = {};
 
@@ -1493,7 +1507,7 @@ if (!dataCache || !dataCache.fixtures) {
   }
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
   const stats = {};
 
   function initPlayer(name, team) {
@@ -1590,7 +1604,7 @@ function computeIndividualPlayerStandings() {
   if (!dataCache || !dataCache.fixtures) return [];
 
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
   const players = {};
 
   function initPlayer(name, team) {
@@ -2137,7 +2151,7 @@ function initTeam(name) {
 
 function computeIndividualPlayerStandings() {
   const fixtures = dataCache.fixtures;
-  const results = dataCache.results || {};
+  const results = buildResultMap(dataCache.results); 
   const players = {};
 
   function initPlayer(name, team) {
