@@ -211,7 +211,23 @@ let dataCache = null
     grid.appendChild(card);
   });
 }*/
+/****========================================**************/
 
+function buildResultMap(resultsArray) {
+  const map = {};
+
+  if (Array.isArray(resultsArray)) {
+    resultsArray.forEach(r => {
+      map[String(r.tie_id)] = r;
+    });
+  } else {
+    return resultsArray; // already correct
+  }
+
+  return map;
+}
+
+/*********************=============================************/
 function renderFixtures() {
 
   const grid = document.getElementById("fixtures-grid");
