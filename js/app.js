@@ -316,7 +316,7 @@ if (f.matches.length > 0) {
   card.innerHTML = html;
   grid.appendChild(card);
 }
-  );
+  
 
   /* ================= SUMMARY RENDER ================= */
   let summaryText = "";
