@@ -1147,7 +1147,7 @@ function computeTeamStandings() {
 
   // Process matches
   fixtures.forEach(f => {
-    const res = results[f.tie_id];
+    const res = results[normalizeKey(f.tie_id)];
     if (!res) return;
 
     res.matches.forEach((m, idx) => {
@@ -1378,7 +1378,7 @@ function computePlayerStandings() {
   }
 
   fixtures.forEach(f => {
-    const res = results[f.tie_id];
+    const res = results[normalizeKey(f.tie_id)];
     if (!res) return;
 
     f.matches.forEach((pair, i) => {
@@ -1625,7 +1625,7 @@ function computeIndividualPlayerStandings() {
   }
 
   fixtures.forEach(f => {
-    const res = results[f.tie_id];
+    const res = results[normalizeKey(f.tie_id)];
     if (!res) return;
 
     f.matches.forEach((pair, idx) => {
@@ -1895,7 +1895,8 @@ function showPlayerProfile(playerName) {
   const matchHistory = [];
 
   dataCache.fixtures.forEach(f => {
-    const r = dataCache.results?.[f.tie_id];
+    const results = buildResultMap(dataCache.results); 
+    const r = results[normalizeKey(f.tie_id)];
     if (!r) return;
 
     f.matches.forEach((pair, i) => {
@@ -2173,7 +2174,7 @@ function computeIndividualPlayerStandings() {
   }
 
   fixtures.forEach(f => {
-    const res = results[f.tie_id];
+    const res = results[normalizeKey(f.tie_id)];
     if (!res) return;
 
     f.matches.forEach((pair, idx) => {
@@ -2269,7 +2270,7 @@ function computeRecentFormForPlayer(playerName, limit = 5) {
   const form = [];
 
   dataCache.fixtures.forEach(f => {
-    const r = dataCache.results?.[f.tie_id];
+    const results = buildResultMap(dataCache.results); const r = results[normalizeKey(f.tie_id)];
     if (!r) return;
 
     f.matches.forEach((pair, idx) => {
