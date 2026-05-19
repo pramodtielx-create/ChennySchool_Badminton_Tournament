@@ -229,6 +229,11 @@ function buildResultMap(resultsArray) {
 
 /*********************=============================************/
 function renderFixtures() {
+  
+if (!dataCache || !dataCache.fixtures) {
+    console.warn("Data not ready yet");
+    return;
+  }
 
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
