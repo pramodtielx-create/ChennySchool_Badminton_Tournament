@@ -724,13 +724,22 @@ function showTeamMatches(team) {
       if (!m || !m.sets) {
         if (!showPending) return;
 
-        html += `
+     /*   html += `
           <div class="match pending">
             M${i+1} ⏳
             <div>${p[0]}</div>
             <div>vs ${p[1]}</div>
           </div>
-        `;
+        `;*/
+        html += `
+  <div class="match done">
+    M${i+1}
+    <div>${p[0]} ${a > b ? "🏆" : ""}</div>
+    <div>vs ${p[1]} ${b > a ? "🏆" : ""}</div>
+    <div>${score}</div>
+  </div>
+`;
+
         return;
       }
 
