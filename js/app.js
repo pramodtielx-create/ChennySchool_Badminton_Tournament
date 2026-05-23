@@ -110,7 +110,7 @@ let dataCache = null
 
 /*====================================================================*/
 
-
+/*
 function renderFixtures() {
 
   const grid = document.getElementById("fixtures-grid");
@@ -131,22 +131,7 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
-  // ✅ Helper (ONE SOURCE OF TRUTH)
-/*  function isVisible(f) {
-    const stage = (f.stage || "").toLowerCase();
 
-    const isR1 = f.round_no === 1;
-    const isR2 = f.round_no === 2;
-    const isSF = stage.includes("semi");
-    const isFinal = stage.includes("final");
-
-    return !(
-      (!showR1 && isR1) ||
-      (!showR2 && isR2) ||
-      (!showSF && isSF) ||
-      (!showFinal && isFinal)
-    );
-  }*/
 function isVisible(f) {
   const stage = (f.stage || "").toLowerCase();
 
@@ -274,28 +259,130 @@ function isVisible(f) {
   summary.innerHTML = `<div class="summary">${summaryText}</div>`;
 }
 
-/*
+*/
 
 function renderFixtures() {
+
   const grid = document.getElementById("fixtures-grid");
   const summary = document.getElementById("summary");
 
   grid.innerHTML = "";
+  summary.innerHTML = "";
 
   const fixtures = dataCache.fixtures;
-  const results = buildResultMap(dataCache.results); 
+  const results = buildResultMap(dataCache.results);
 
   const showR1 = document.getElementById("r1").checked;
   const showR2 = document.getElementById("r2").checked;
+  const showSF = document.getElementById("sf").checked;
+  const showFinal = document.getElementById("final").checked;
   const showCompleted = document.getElementById("completed").checked;
   const showPending = document.getElementById("pending").checked;
-
 
   let totalCompleted = 0;
   let totalPending = 0;
 
+  // ✅ FIXED FILTER (CRITICAL FIX)
+  function isVisible(f) {
+    const stage = (f.stage || "").toLowerCase();
+
+    const isR1 = f.round_no === 1;
+    const isR2 = f.round_no === 2;
+
+    const isSF =
+      stage === "semifinal" ||
+      stage === "semi" ||
+      f.round_no === 3;
+
+    const isFinal =
+      stage === "final" ||
+      f.round_no === 4;
+
+    return !(
+      (!showR1 && isR1) ||
+      (!showR2 && isR2) ||
+      (!showSF && isSF) ||
+      (!showFinal && isFinal)
+    );
+  }
+
+  // ✅ FINAL MATCH DETECTION
+  const finalMatch = fixtures.find(f => {
+    const stage = (f.stage || "").toLowerCase();
+    return stage === "final" || f.round_no === 4;
+  });
+
+  // ✅ HEAD TO HEAD
+  function getHeadToHead(teamA, teamB) {
+    let aWins = 0, bWins = 0;
+
+    fixtures.forEach(f => {
+      if (
+        (f.team_a === teamA && f.team_b === teamB) ||
+        (f.team_a === teamB && f.team_b === teamA)
+      ) {
+        const r = results[normalizeKey(f.tie_id)];
+        if (!r) return;
+
+        let aScore = 0, bScore = 0;
+
+        r.matches.forEach(m => {
+          if (!m || !m.sets) return;
+
+          let a = 0, b = 0;
+          m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+          if (a > b) {
+            f.team_a === teamA ? aScore++ : bScore++;
+          } else {
+            f.team_a === teamA ? bScore++ : aScore++;
+          }
+        });
+
+        if (aScore > bScore) aWins++;
+        else if (bScore > aScore) bWins++;
+      }
+    });
+
+    return { aWins, bWins };
+  }
+
+  // ✅ SHOW FINAL BANNER + H2H
+  if (finalMatch) {
+
+    const h2h = getHeadToHead(finalMatch.team_a, finalMatch.team_b);
+
+    summary.innerHTML = `
+      <div class="final-banner">
+        🏆 GRAND FINAL 🏆<br>
+        ${finalMatch.team_a} 🆚 ${finalMatch.team_b}
+      </div>
+
+      <div class="h2h">
+        📊 Head-to-Head<br>
+        ${finalMatch.team_a} ${h2h.aWins} - ${h2h.bWins} ${finalMatch.team_b}
+      </div>
+    `;
+
+    // ✅ CONFETTI 🎉
+    if (typeof confetti === "function") {
+      const duration = 4000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0 } });
+        confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1 } });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+    }
+  }
+
+  // ✅ SUMMARY
   fixtures.forEach(f => {
+    if (!isVisible(f)) return;
+
     const r = results[normalizeKey(f.tie_id)];
+
     f.matches.forEach((_, i) => {
       const m = r && r.matches[i];
       if (!m || !m.sets) totalPending++;
@@ -303,10 +390,9 @@ function renderFixtures() {
     });
   });
 
-
+  // ✅ RENDER FIXTURES
   fixtures.forEach(f => {
-    // Round filter
-    if ((f.round_no === 1 && !showR1) || (f.round_no === 2 && !showR2)) return;
+    if (!isVisible(f)) return;
 
     const r = results[normalizeKey(f.tie_id)];
 
@@ -315,6 +401,7 @@ function renderFixtures() {
 
     let html = `
       <div class="fixture-header">
+        ${f.stage ? "🔥 " + f.stage + ": " : ""}
         ${f.team_a} <span class="vs">vs</span> ${f.team_b}
       </div>
 
@@ -327,20 +414,20 @@ function renderFixtures() {
       </div>
     `;
 
-    let visibleMatchCount = 0;
+    let visible = 0;
 
     f.matches.forEach((pair, i) => {
+
       const m = r && r.matches[i];
 
-    
       if (!m || !m.sets) {
         if (!showPending) return;
 
-        visibleMatchCount++;
+        visible++;
 
         html += `
           <div class="result-row pending">
-            <div>M${i + 1}</div>
+            <div>M${i+1}</div>
             <div>${pair[0]}</div>
             <div>vs</div>
             <div>${pair[1]}</div>
@@ -350,75 +437,48 @@ function renderFixtures() {
         return;
       }
 
-   
       if (!showCompleted) return;
 
       let a = 0, b = 0;
       m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
 
-      const winnerSide = a > b ? 0 : 1;
       const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
-      visibleMatchCount++;
+      visible++;
 
       html += `
         <div class="result-row">
-          <div>M${i + 1}</div>
-          <div>${winnerSide === 0 ? "🏆 " : ""}${pair[0]}</div>
+          <div>M${i+1}</div>
+          <div>${a > b ? "🏆 " : ""}${pair[0]}</div>
           <div>vs</div>
-          <div>${winnerSide === 1 ? "🏆 " : ""}${pair[1]}</div>
+          <div>${b > a ? "🏆 " : ""}${pair[1]}</div>
           <div>${score}</div>
         </div>
       `;
     });
 
-    // ✅ Show tie ONLY if at least one match is visible
-    if (visibleMatchCount > 0) {
+    if (visible > 0) {
       card.innerHTML = html;
       grid.appendChild(card);
     }
   });
 
-
+  // ✅ FINAL SUMMARY TEXT
   let summaryText = "";
 
   if (showPending && !showCompleted) {
-    summaryText = `⏳ Pending: ${totalPending} matches`;
+    summaryText = `⏳ Pending: ${totalPending}`;
   } else if (showCompleted && !showPending) {
-    summaryText = `✅ Completed: ${totalCompleted} matches`;
+    summaryText = `✅ Completed: ${totalCompleted}`;
   } else {
-    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending} matches`;
+    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending}`;
   }
 
-  summary.innerHTML = `
-    <div class="summary">
-      ${summaryText}
-    </div>
-  `;
+  summary.innerHTML += `<div class="summary">${summaryText}</div>`;
 }
-*/
+
 /**************************showresult*********************/
-/*function showResults() {
-  const c = document.getElementById("main-content");
 
-  c.innerHTML = `
-    <div class="filters">
-      <label><input type="checkbox" id="res-r1" checked> Round 1</label>
-      <label><input type="checkbox" id="res-r2" checked> Round 2</label>
-      <label><input type="checkbox" id="res-completed" checked> Completed</label>
-      <label><input type="checkbox" id="res-pending" checked> Pending</label>
-    </div>
-
-    <h2>Results</h2>
-    <div id="results-grid" class="fixtures-grid"></div>
-  `;
-
-  ["res-r1", "res-r2", "res-completed", "res-pending"].forEach(id => {
-    document.getElementById(id).onchange = renderResults;
-  });
-
-  renderResults();
-}*/
 function showResults() {
 
   const c = document.getElementById("main-content");
