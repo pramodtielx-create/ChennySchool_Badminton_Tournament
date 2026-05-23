@@ -147,13 +147,22 @@ function renderFixtures() {
       (!showFinal && isFinal)
     );
   }*/
-  function isVisible(f) {
+function isVisible(f) {
   const stage = (f.stage || "").toLowerCase();
 
   const isR1 = f.round_no === 1;
   const isR2 = f.round_no === 2;
-  const isSF = stage.includes("semi") || f.round_no === 3;
-  const isFinal = stage.includes("final") || f.round_no === 4;
+
+  // ✅ Only true for Semifinal
+  const isSF =
+    stage === "semifinal" ||
+    stage === "semi" ||
+    f.round_no === 3;
+
+  // ✅ Only true for Final (NOT semifinal)
+  const isFinal =
+    stage === "final" ||
+    f.round_no === 4;
 
   return !(
     (!showR1 && isR1) ||
