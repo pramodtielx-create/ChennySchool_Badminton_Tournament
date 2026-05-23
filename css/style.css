@@ -2042,3 +2042,26 @@ body::after {
   from { transform: translateY(0); }
   to { transform: translateY(-200px); }
 }
+.champion-banner {
+  text-align: center;
+  font-size: 34px;
+  font-weight: bold;
+  padding: 20px;
+  margin-top: 15px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, gold, orange, gold);
+  color: black;
+
+  animation: championPulse 1.5s infinite alternate,
+             championGlow 2s infinite alternate;
+}
+
+@keyframes championPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+@keyframes championGlow {
+  from { box-shadow: 0 0 20px gold; }
+  to { box-shadow: 0 0 40px gold; }
+}
