@@ -2065,3 +2065,40 @@ body::after {
   from { box-shadow: 0 0 20px gold; }
   to { box-shadow: 0 0 40px gold; }
 }
+.finalists-banner {
+  text-align:center;
+  font-size:26px;
+  background:#2563eb;
+  color:white;
+  padding:12px;
+  border-radius:10px;
+}
+
+.final-banner {
+  text-align:center;
+  font-size:28px;
+  background:#f97316;
+  color:white;
+  padding:12px;
+  margin:10px 0;
+}
+
+.h2h {
+  text-align:center;
+  color:#facc15;
+  font-weight:bold;
+}
+
+.live-final {
+  text-align:center;
+  color:red;
+  font-weight:bold;
+}
+
+.champion-banner {
+  text-align:center;
+  font-size:32px;
+  background:gold;
+  padding:15px;
+  margin-top:10px;
+}
