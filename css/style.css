@@ -2019,3 +2019,10 @@ body.dark a {
   color: #facc15;
   margin-bottom: 10px;
 }
+.final-banner {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #f97316
