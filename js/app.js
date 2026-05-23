@@ -282,7 +282,7 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
-  // ✅ FILTER FIX (CRITICAL)
+  // ✅ FILTER FIX
   function isVisible(f) {
     const stage = (f.stage || "").toLowerCase();
 
@@ -305,7 +305,7 @@ function renderFixtures() {
     return stage === "final" || f.round_no === 4;
   });
 
-  // ✅ HEAD‑TO‑HEAD
+  // ✅ HEAD TO HEAD
   function getHeadToHead(teamA, teamB) {
     let aWins = 0, bWins = 0;
 
@@ -314,7 +314,6 @@ function renderFixtures() {
         (f.team_a === teamA && f.team_b === teamB) ||
         (f.team_a === teamB && f.team_b === teamA)
       ) {
-
         const r = results[normalizeKey(f.tie_id)];
         if (!r) return;
 
@@ -341,7 +340,41 @@ function renderFixtures() {
     return { aWins, bWins };
   }
 
-  // ✅ CHAMPION LOGIC
+  // ✅ FINALIST (SEMIFINAL WINNERS)
+  function getFinalists() {
+
+    const semiMatches = fixtures.filter(f => {
+      const stage = (f.stage || "").toLowerCase();
+      return stage === "semifinal" || f.round_no === 3;
+    });
+
+    const winners = [];
+
+    semiMatches.forEach(f => {
+      const r = results[normalizeKey(f.tie_id)];
+      if (!r) return;
+
+      let aWins = 0, bWins = 0;
+
+      r.matches.forEach(m => {
+        if (!m || !m.sets) return;
+
+        let a = 0, b = 0;
+        m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+        if (a > b) aWins++;
+        else bWins++;
+      });
+
+      if ((aWins + bWins) === f.matches.length) {
+        winners.push(aWins > bWins ? f.team_a : f.team_b);
+      }
+    });
+
+    return winners.length === 2 ? winners : null;
+  }
+
+  // ✅ CHAMPION
   function getChampion(finalMatch) {
     if (!finalMatch) return null;
 
@@ -360,17 +393,40 @@ function renderFixtures() {
       else bWins++;
     });
 
-    const totalMatches = finalMatch.matches.length;
-
-    // ✅ Only when ALL matches completed
-    if ((aWins + bWins) < totalMatches) return null;
+    if ((aWins + bWins) < finalMatch.matches.length) return null;
 
     return aWins > bWins ? finalMatch.team_a : finalMatch.team_b;
   }
 
-  // ✅ SHOW FINAL SECTION
-  if (finalMatch) {
+  // ✅ CELEBRATION
+  function launchCelebration() {
+    if (window._celebration_done) return;
+    window._celebration_done = true;
 
+    const duration = 4000;
+    const end = Date.now() + duration;
+
+    (function frame() {
+      confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0 } });
+      confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1 } });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+
+  const finalists = getFinalists();
+
+  // ✅ SHOW FINALISTS (if no final yet)
+  if (finalists && !finalMatch) {
+    summary.innerHTML = `
+      <div class="finalists-banner">
+        🔥 FINALISTS CONFIRMED 🔥<br>
+        ${finalists[0]} 🆚 ${finalists[1]}
+      </div>
+    `;
+  }
+
+  // ✅ SHOW FINAL UI
+  if (finalMatch) {
     const h2h = getHeadToHead(finalMatch.team_a, finalMatch.team_b);
     const champion = getChampion(finalMatch);
 
@@ -381,27 +437,27 @@ function renderFixtures() {
       </div>
 
       <div class="h2h">
-        📊 Head-to-Head<br>
         ${finalMatch.team_a} ${h2h.aWins} - ${h2h.bWins} ${finalMatch.team_b}
       </div>
     `;
 
-    // ✅ CHAMPION DISPLAY
-   if (champion) {
+    if (!champion) {
+      summary.innerHTML += `<div class="live-final">🔴 Final is LIVE</div>`;
+    }
 
-  // ✅ Trigger celebration
-  launchCelebration();
+    if (champion) {
+      launchCelebration();
 
-  summary.innerHTML += `
-    <div class="champion-banner">
-      🏆 CHAMPIONS 🏆<br>
-      ${champion}
-    </div>
-  `;
-}
+      summary.innerHTML += `
+        <div class="champion-banner">
+          🏆 CHAMPIONS 🏆<br>
+          ${champion}
+        </div>
+      `;
+    }
   }
 
-  // ✅ SUMMARY COUNT
+  // ✅ COUNT SUMMARY
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
 
@@ -414,6 +470,12 @@ function renderFixtures() {
     });
   });
 
+  summary.innerHTML += `
+    <div class="summary">
+      📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending}
+    </div>
+  `;
+
   // ✅ RENDER MATCHES
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
@@ -423,41 +485,18 @@ function renderFixtures() {
     const card = document.createElement("div");
     card.className = "fixture-card";
 
-    let html = `
-      <div class="fixture-header">
-        ${f.stage ? "🔥 " + f.stage + ": " : ""}
-        ${f.team_a} vs ${f.team_b}
-      </div>
-
-      <div class="result-row header">
-        <div>M</div>
-        <div>${f.team_a}</div>
-        <div>VS</div>
-        <div>${f.team_b}</div>
-        <div>Score</div>
-      </div>
-    `;
-
-    let visible = 0;
+    let html = `<div class="fixture-header">${f.team_a} vs ${f.team_b}</div>`;
 
     f.matches.forEach((pair, i) => {
-
       const m = r && r.matches[i];
 
       if (!m || !m.sets) {
         if (!showPending) return;
 
-        visible++;
-
-        html += `
-          <div class="result-row pending">
-            <div>M${i+1}</div>
-            <div>${pair[0]}</div>
-            <div>vs</div>
-            <div>${pair[1]}</div>
-            <div>—</div>
-          </div>
-        `;
+        html += `<div class="result-row pending">
+          <div>M${i+1}</div><div>${pair[0]}</div><div>vs</div>
+          <div>${pair[1]}</div><div>—</div>
+        </div>`;
         return;
       }
 
@@ -468,37 +507,18 @@ function renderFixtures() {
 
       const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
-      visible++;
-
-      html += `
-        <div class="result-row">
-          <div>M${i+1}</div>
-          <div>${a > b ? "🏆 " : ""}${pair[0]}</div>
-          <div>vs</div>
-          <div>${b > a ? "🏆 " : ""}${pair[1]}</div>
-          <div>${score}</div>
-        </div>
-      `;
+      html += `<div class="result-row">
+        <div>M${i+1}</div>
+        <div>${a > b ? "🏆 " : ""}${pair[0]}</div>
+        <div>vs</div>
+        <div>${b > a ? "🏆 " : ""}${pair[1]}</div>
+        <div>${score}</div>
+      </div>`;
     });
 
-    if (visible > 0) {
-      card.innerHTML = html;
-      grid.appendChild(card);
-    }
+    card.innerHTML = html;
+    grid.appendChild(card);
   });
-
-  // ✅ SUMMARY TEXT (APPEND)
-  let summaryText = "";
-
-  if (showPending && !showCompleted) {
-    summaryText = `⏳ Pending: ${totalPending}`;
-  } else if (showCompleted && !showPending) {
-    summaryText = `✅ Completed: ${totalCompleted}`;
-  } else {
-    summaryText = `📊 Completed: ${totalCompleted} / ${totalCompleted + totalPending}`;
-  }
-
-  summary.innerHTML += `<div class="summary">${summaryText}</div>`;
 }
 
 /**************************showresult*********************/
@@ -2613,4 +2633,40 @@ function launchCelebration() {
       requestAnimationFrame(frame);
     }
   })();
+}
+function getFinalists() {
+  const results = buildResultMap(dataCache.results);
+
+  const semiMatches = dataCache.fixtures.filter(f => {
+    const stage = (f.stage || "").toLowerCase();
+    return stage === "semifinal" || stage === "semi" || f.round_no === 3;
+  });
+
+  const winners = [];
+
+  semiMatches.forEach(f => {
+    const r = results[normalizeKey(f.tie_id)];
+    if (!r) return;
+
+    let aWins = 0, bWins = 0;
+
+    r.matches.forEach(m => {
+      if (!m || !m.sets) return;
+
+      let a = 0, b = 0;
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+      if (a > b) aWins++;
+      else bWins++;
+    });
+
+    const totalMatches = f.matches.length;
+
+    // ✅ Only if semifinal is fully completed
+    if ((aWins + bWins) < totalMatches) return;
+
+    winners.push(aWins > bWins ? f.team_a : f.team_b);
+  });
+
+  return winners.length === 2 ? winners : null;
 }
