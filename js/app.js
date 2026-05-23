@@ -282,7 +282,7 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
-  // ✅ FIXED FILTER (CRITICAL FIX)
+  // ✅ CORRECT FILTER (NO SF/FINAL CONFLICT)
   function isVisible(f) {
     const stage = (f.stage || "").toLowerCase();
 
@@ -306,21 +306,23 @@ function renderFixtures() {
     );
   }
 
-  // ✅ FINAL MATCH DETECTION
+  // ✅ FIND FINAL MATCH
   const finalMatch = fixtures.find(f => {
     const stage = (f.stage || "").toLowerCase();
     return stage === "final" || f.round_no === 4;
   });
 
-  // ✅ HEAD TO HEAD
+  // ✅ HEAD‑TO‑HEAD CALCULATION
   function getHeadToHead(teamA, teamB) {
     let aWins = 0, bWins = 0;
 
     fixtures.forEach(f => {
+
       if (
         (f.team_a === teamA && f.team_b === teamB) ||
         (f.team_a === teamB && f.team_b === teamA)
       ) {
+
         const r = results[normalizeKey(f.tie_id)];
         if (!r) return;
 
@@ -355,7 +357,7 @@ function renderFixtures() {
     summary.innerHTML = `
       <div class="final-banner">
         🏆 GRAND FINAL 🏆<br>
-        ${finalMatch.team_a} 🆚 ${finalMatch.team_b}
+        <span>${finalMatch.team_a}</span> 🆚 <span>${finalMatch.team_b}</span>
       </div>
 
       <div class="h2h">
@@ -363,21 +365,9 @@ function renderFixtures() {
         ${finalMatch.team_a} ${h2h.aWins} - ${h2h.bWins} ${finalMatch.team_b}
       </div>
     `;
-
-    // ✅ CONFETTI 🎉
-    if (typeof confetti === "function") {
-      const duration = 4000;
-      const end = Date.now() + duration;
-
-      (function frame() {
-        confetti({ particleCount: 6, angle: 60, spread: 70, origin: { x: 0 } });
-        confetti({ particleCount: 6, angle: 120, spread: 70, origin: { x: 1 } });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      })();
-    }
   }
 
-  // ✅ SUMMARY
+  // ✅ COUNT SUMMARY
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
 
@@ -390,7 +380,7 @@ function renderFixtures() {
     });
   });
 
-  // ✅ RENDER FIXTURES
+  // ✅ RENDER CARDS
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
 
@@ -420,6 +410,7 @@ function renderFixtures() {
 
       const m = r && r.matches[i];
 
+      // ✅ Pending
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -437,6 +428,7 @@ function renderFixtures() {
         return;
       }
 
+      // ✅ Completed
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -463,7 +455,7 @@ function renderFixtures() {
     }
   });
 
-  // ✅ FINAL SUMMARY TEXT
+  // ✅ FINAL SUMMARY TEXT (APPEND — not overwrite)
   let summaryText = "";
 
   if (showPending && !showCompleted) {
