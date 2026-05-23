@@ -282,21 +282,14 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
-  // ✅ CORRECT FILTER (NO SF/FINAL CONFLICT)
+  // ✅ FILTER FIX (CRITICAL)
   function isVisible(f) {
     const stage = (f.stage || "").toLowerCase();
 
     const isR1 = f.round_no === 1;
     const isR2 = f.round_no === 2;
-
-    const isSF =
-      stage === "semifinal" ||
-      stage === "semi" ||
-      f.round_no === 3;
-
-    const isFinal =
-      stage === "final" ||
-      f.round_no === 4;
+    const isSF = stage === "semifinal" || stage === "semi" || f.round_no === 3;
+    const isFinal = stage === "final" || f.round_no === 4;
 
     return !(
       (!showR1 && isR1) ||
@@ -306,18 +299,17 @@ function renderFixtures() {
     );
   }
 
-  // ✅ FIND FINAL MATCH
+  // ✅ FINAL MATCH
   const finalMatch = fixtures.find(f => {
     const stage = (f.stage || "").toLowerCase();
     return stage === "final" || f.round_no === 4;
   });
 
-  // ✅ HEAD‑TO‑HEAD CALCULATION
+  // ✅ HEAD‑TO‑HEAD
   function getHeadToHead(teamA, teamB) {
     let aWins = 0, bWins = 0;
 
     fixtures.forEach(f => {
-
       if (
         (f.team_a === teamA && f.team_b === teamB) ||
         (f.team_a === teamB && f.team_b === teamA)
@@ -349,15 +341,43 @@ function renderFixtures() {
     return { aWins, bWins };
   }
 
-  // ✅ SHOW FINAL BANNER + H2H
+  // ✅ CHAMPION LOGIC
+  function getChampion(finalMatch) {
+    if (!finalMatch) return null;
+
+    const r = results[normalizeKey(finalMatch.tie_id)];
+    if (!r) return null;
+
+    let aWins = 0, bWins = 0;
+
+    r.matches.forEach(m => {
+      if (!m || !m.sets) return;
+
+      let a = 0, b = 0;
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
+
+      if (a > b) aWins++;
+      else bWins++;
+    });
+
+    const totalMatches = finalMatch.matches.length;
+
+    // ✅ Only when ALL matches completed
+    if ((aWins + bWins) < totalMatches) return null;
+
+    return aWins > bWins ? finalMatch.team_a : finalMatch.team_b;
+  }
+
+  // ✅ SHOW FINAL SECTION
   if (finalMatch) {
 
     const h2h = getHeadToHead(finalMatch.team_a, finalMatch.team_b);
+    const champion = getChampion(finalMatch);
 
     summary.innerHTML = `
       <div class="final-banner">
         🏆 GRAND FINAL 🏆<br>
-        <span>${finalMatch.team_a}</span> 🆚 <span>${finalMatch.team_b}</span>
+        ${finalMatch.team_a} 🆚 ${finalMatch.team_b}
       </div>
 
       <div class="h2h">
@@ -365,9 +385,19 @@ function renderFixtures() {
         ${finalMatch.team_a} ${h2h.aWins} - ${h2h.bWins} ${finalMatch.team_b}
       </div>
     `;
+
+    // ✅ CHAMPION DISPLAY
+    if (champion) {
+      summary.innerHTML += `
+        <div class="champion-banner">
+          🏆 CHAMPIONS 🏆<br>
+          ${champion}
+        </div>
+      `;
+    }
   }
 
-  // ✅ COUNT SUMMARY
+  // ✅ SUMMARY COUNT
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
 
@@ -380,7 +410,7 @@ function renderFixtures() {
     });
   });
 
-  // ✅ RENDER CARDS
+  // ✅ RENDER MATCHES
   fixtures.forEach(f => {
     if (!isVisible(f)) return;
 
@@ -392,7 +422,7 @@ function renderFixtures() {
     let html = `
       <div class="fixture-header">
         ${f.stage ? "🔥 " + f.stage + ": " : ""}
-        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+        ${f.team_a} vs ${f.team_b}
       </div>
 
       <div class="result-row header">
@@ -410,7 +440,6 @@ function renderFixtures() {
 
       const m = r && r.matches[i];
 
-      // ✅ Pending
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -428,7 +457,6 @@ function renderFixtures() {
         return;
       }
 
-      // ✅ Completed
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -455,7 +483,7 @@ function renderFixtures() {
     }
   });
 
-  // ✅ FINAL SUMMARY TEXT (APPEND — not overwrite)
+  // ✅ SUMMARY TEXT (APPEND)
   let summaryText = "";
 
   if (showPending && !showCompleted) {
