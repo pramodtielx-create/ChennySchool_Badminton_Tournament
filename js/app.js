@@ -387,14 +387,18 @@ function renderFixtures() {
     `;
 
     // ✅ CHAMPION DISPLAY
-    if (champion) {
-      summary.innerHTML += `
-        <div class="champion-banner">
-          🏆 CHAMPIONS 🏆<br>
-          ${champion}
-        </div>
-      `;
-    }
+   if (champion) {
+
+  // ✅ Trigger celebration
+  launchCelebration();
+
+  summary.innerHTML += `
+    <div class="champion-banner">
+      🏆 CHAMPIONS 🏆<br>
+      ${champion}
+    </div>
+  `;
+}
   }
 
   // ✅ SUMMARY COUNT
