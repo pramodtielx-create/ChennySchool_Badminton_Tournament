@@ -132,7 +132,7 @@ function renderFixtures() {
   let totalPending = 0;
 
   // ✅ Helper (ONE SOURCE OF TRUTH)
-  function isVisible(f) {
+/*  function isVisible(f) {
     const stage = (f.stage || "").toLowerCase();
 
     const isR1 = f.round_no === 1;
@@ -146,7 +146,22 @@ function renderFixtures() {
       (!showSF && isSF) ||
       (!showFinal && isFinal)
     );
-  }
+  }*/
+  function isVisible(f) {
+  const stage = (f.stage || "").toLowerCase();
+
+  const isR1 = f.round_no === 1;
+  const isR2 = f.round_no === 2;
+  const isSF = stage.includes("semi") || f.round_no === 3;
+  const isFinal = stage.includes("final") || f.round_no === 4;
+
+  return !(
+    (!showR1 && isR1) ||
+    (!showR2 && isR2) ||
+    (!showSF && isSF) ||
+    (!showFinal && isFinal)
+  );
+}
 
   // ✅ SUMMARY CALCULATION
   fixtures.forEach(f => {
