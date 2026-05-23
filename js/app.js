@@ -801,12 +801,20 @@ function showTeamMatches(team) {
     const card = document.createElement("div");
     card.className = "fixture-card";
 
-    let html = `
-      <div class="fixture-header">
-        ${f.stage ? "🔥 " + f.stage + ": " : ""}
-        ${f.team_a} vs ${f.team_b}
-      </div>
-    `;
+   let html = `
+  <div class="fixture-header">
+    ${f.stage ? "🔥 " + f.stage + ": " : ""}
+    ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+  </div>
+
+  <div class="result-row header">
+    <div>M</div>
+    <div>${f.team_a}</div>
+    <div>VS</div>
+    <div>${f.team_b}</div>
+    <div>Score</div>
+  </div>
+`;
 
     f.matches.forEach((p, i) => {
       const m = r && r.matches[i];
