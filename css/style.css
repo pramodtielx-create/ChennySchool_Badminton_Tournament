@@ -2001,3 +2001,21 @@ body.dark a {
   font-weight: bold;
   color: #facc15;
 }
+.final-banner {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #f97316, #facc15, #16a34a);
+  color: white;
+}
+
+.h2h {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #facc15;
+  margin-bottom: 10px;
+}
