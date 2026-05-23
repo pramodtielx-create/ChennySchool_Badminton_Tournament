@@ -2026,3 +2026,19 @@ body.dark a {
   padding: 16px;
   border-radius: 12px;
   background: linear-gradient(90deg, #f97316
+body::after {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: sparkleMove 12s linear infinite;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+@keyframes sparkleMove {
+  from { transform: translateY(0); }
+  to { transform: translateY(-200px); }
+}
