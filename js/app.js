@@ -131,17 +131,26 @@ function renderFixtures() {
   let totalCompleted = 0;
   let totalPending = 0;
 
-  // ✅ FILTERED SUMMARY (FIXED)
-  fixtures.forEach(f => {
-
+  // ✅ Helper (ONE SOURCE OF TRUTH)
+  function isVisible(f) {
     const stage = (f.stage || "").toLowerCase();
 
-    if (
-      (f.round_no === 1 && !showR1) ||
-      (f.round_no === 2 && !showR2) ||
-      (stage.includes("semi") && !showSF) ||
-      (stage.includes("final") && !showFinal)
-    ) return;
+    const isR1 = f.round_no === 1;
+    const isR2 = f.round_no === 2;
+    const isSF = stage.includes("semi");
+    const isFinal = stage.includes("final");
+
+    return !(
+      (!showR1 && isR1) ||
+      (!showR2 && isR2) ||
+      (!showSF && isSF) ||
+      (!showFinal && isFinal)
+    );
+  }
+
+  // ✅ SUMMARY CALCULATION
+  fixtures.forEach(f => {
+    if (!isVisible(f)) return;
 
     const r = results[normalizeKey(f.tie_id)];
 
@@ -154,15 +163,7 @@ function renderFixtures() {
 
   // ✅ RENDER CARDS
   fixtures.forEach(f => {
-
-    const stage = (f.stage || "").toLowerCase();
-
-    if (
-      (f.round_no === 1 && !showR1) ||
-      (f.round_no === 2 && !showR2) ||
-      (stage.includes("semi") && !showSF) ||
-      (stage.includes("final") && !showFinal)
-    ) return;
+    if (!isVisible(f)) return;
 
     const r = results[normalizeKey(f.tie_id)];
 
@@ -190,6 +191,7 @@ function renderFixtures() {
 
       const m = r && r.matches[i];
 
+      // ✅ PENDING
       if (!m || !m.sets) {
         if (!showPending) return;
 
@@ -207,22 +209,22 @@ function renderFixtures() {
         return;
       }
 
+      // ✅ COMPLETED
       if (!showCompleted) return;
 
-      let a=0,b=0;
-      m.sets.forEach(s=>s[0]>s[1]?a++:b++);
+      let a = 0, b = 0;
+      m.sets.forEach(s => (s[0] > s[1] ? a++ : b++));
 
-      const w = a>b?0:1;
-      const score = m.sets.map(s=>`${s[0]}-${s[1]}`).join(" | ");
+      const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
       visible++;
 
       html += `
         <div class="result-row">
           <div>M${i+1}</div>
-          <div>${w===0?"🏆 ":""}${pair[0]}</div>
+          <div>${a > b ? "🏆 " : ""}${pair[0]}</div>
           <div>vs</div>
-          <div>${w===1?"🏆 ":""}${pair[1]}</div>
+          <div>${b > a ? "🏆 " : ""}${pair[1]}</div>
           <div>${score}</div>
         </div>
       `;
@@ -234,7 +236,7 @@ function renderFixtures() {
     }
   });
 
-  // ✅ SUMMARY OUTPUT
+  // ✅ SUMMARY DISPLAY
   let summaryText = "";
 
   if (showPending && !showCompleted) {
