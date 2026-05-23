@@ -801,39 +801,42 @@ function showTeamMatches(team) {
     const card = document.createElement("div");
     card.className = "fixture-card";
 
-   let html = `
-  <div class="fixture-header">
-    ${f.stage ? "🔥 " + f.stage + ": " : ""}
-    ${f.team_a} <span class="vs">vs</span> ${f.team_b}
-  </div>
+    // ✅ HEADER SAME AS FIXTURES
+    let html = `
+      <div class="fixture-header">
+        ${f.stage ? "🔥 " + f.stage + ": " : ""}
+        ${f.team_a} <span class="vs">vs</span> ${f.team_b}
+      </div>
 
-  <div class="result-row header">
-    <div>M</div>
-    <div>${f.team_a}</div>
-    <div>VS</div>
-    <div>${f.team_b}</div>
-    <div>Score</div>
-  </div>
-`;
+      <div class="result-row header">
+        <div>M</div>
+        <div>${f.team_a}</div>
+        <div>VS</div>
+        <div>${f.team_b}</div>
+        <div>Score</div>
+      </div>
+    `;
 
     f.matches.forEach((p, i) => {
       const m = r && r.matches[i];
 
-      // ✅ PENDING MATCHES (correct)
+      // ✅ ✅ PENDING (TABLE FORMAT)
       if (!m || !m.sets) {
         if (!showPending) return;
 
         html += `
-          <div class="match pending">
-            M${i+1} ⏳
+          <div class="result-row pending">
+            <div>M${i+1}</div>
             <div>${p[0]}</div>
-            <div>vs ${p[1]}</div>
+            <div>vs</div>
+            <div>${p[1]}</div>
+            <div>—</div>
           </div>
         `;
         return;
       }
 
-      // ✅ COMPLETED MATCHES
+      // ✅ ✅ COMPLETED (TABLE FORMAT)
       if (!showCompleted) return;
 
       let a = 0, b = 0;
@@ -841,13 +844,13 @@ function showTeamMatches(team) {
 
       const score = m.sets.map(s => `${s[0]}-${s[1]}`).join(" | ");
 
-      // ✅ ✅ KEY FIX: DO NOT FLIP PLAYERS
       html += `
-        <div class="match done">
-          M${i+1}
-          <div>${p[0]} ${a > b ? "🏆" : ""}</div>
-          <div>vs ${p[1]} ${b > a ? "🏆" : ""}</div>
-          <div class="result-score">${score}</div>
+        <div class="result-row">
+          <div>M${i+1}</div>
+          <div>${a > b ? "🏆 " : ""}${p[0]}</div>
+          <div>vs</div>
+          <div>${b > a ? "🏆 " : ""}${p[1]}</div>
+          <div>${score}</div>
         </div>
       `;
     });
