@@ -2580,3 +2580,33 @@ function showTeamStandings() {
 
 
 
+function launchCelebration() {
+
+  if (window._celebration_done) return; // ✅ prevent repeat
+  window._celebration_done = true;
+
+  const duration = 5000;
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 8,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0 },
+      colors: ['#f97316','#facc15','#16a34a','#2563eb']
+    });
+
+    confetti({
+      particleCount: 8,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1 },
+      colors: ['#f97316','#facc15','#16a34a','#2563eb']
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
+}
