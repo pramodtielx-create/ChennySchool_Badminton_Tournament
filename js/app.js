@@ -35,7 +35,7 @@ const PLAYER_PHOTOS = {
   "Amol P": "assets/players/Amol-P.png",
 
   // ✅ Net Ninjas
-  "Jaswanth": "assets/players/default.png",
+  "Jaswanth": "assets/players/Jaswanth.png",
   "Sandeepk": "assets/players/Sandeep-K.png",
   "Ritesh": "assets/players/Ritesh.png",
   "Vikram": "assets/players/Vikram.png",
