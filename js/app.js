@@ -426,7 +426,7 @@ function renderFixtures() {
   }
 
   // ✅ SHOW FINAL UI
-  if (finalMatch) {
+/*  if (finalMatch) {
     const h2h = getHeadToHead(finalMatch.team_a, finalMatch.team_b);
     const champion = getChampion(finalMatch);
 
@@ -443,9 +443,9 @@ function renderFixtures() {
 
     if (!champion) {
       summary.innerHTML += `<div class="live-final">🔴 Final is LIVE</div>`;
-    }
+    }*/
 
-    if (champion) {
+ /*   if (champion) {
       launchCelebration();
 
       summary.innerHTML += `
@@ -454,7 +454,7 @@ function renderFixtures() {
           ${champion}
         </div>
       `;
-    }
+    }*/
   }
 
   // ✅ COUNT SUMMARY
