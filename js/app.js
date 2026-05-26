@@ -413,49 +413,14 @@ function renderFixtures() {
     })();
   }
 
-  const finalists = getFinalists();
 
-  // ✅ SHOW FINALISTS (if no final yet)
-  if (finalists && !finalMatch) {
-    summary.innerHTML = `
-      <div class="finalists-banner">
-        🔥 FINALISTS CONFIRMED 🔥<br>
-        ${finalists[0]} 🆚 ${finalists[1]}
-      </div>
-    `;
-  }
 
   // ✅ SHOW FINAL UI
-/*  if (finalMatch) {
-    const h2h = getHeadToHead(finalMatch.team_a, finalMatch.team_b);
-    const champion = getChampion(finalMatch);
 
-    summary.innerHTML = `
-      <div class="final-banner">
-        🏆 GRAND FINAL 🏆<br>
-        ${finalMatch.team_a} 🆚 ${finalMatch.team_b}
-      </div>
 
-      <div class="h2h">
-        ${finalMatch.team_a} ${h2h.aWins} - ${h2h.bWins} ${finalMatch.team_b}
-      </div>
-    `;
+ 
 
-    if (!champion) {
-      summary.innerHTML += `<div class="live-final">🔴 Final is LIVE</div>`;
-    }*/
-
- /*   if (champion) {
-      launchCelebration();
-
-      summary.innerHTML += `
-        <div class="champion-banner">
-          🏆 CHAMPIONS 🏆<br>
-          ${champion}
-        </div>
-      `;
-    }*/
-  }
+  
 
   // ✅ COUNT SUMMARY
   fixtures.forEach(f => {
